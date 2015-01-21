@@ -23,30 +23,31 @@ class Solution(object):
 
 class Instance(object):
 
-    """ The instance of a problem given an id"""
+    """ The instance of a problem given an id """
 
-    def __init__(self, nb_sg=420, id=0):
-        self.nb_qubits = 504
+    def __init__(self, nb_sg=420, id=0, nb_qubits=504):
+        self.nb_qubits = nb_qubits
         self.nb_sg = nb_sg
         self.id = id
         file = self.load_file()
         self.config = self.read_config(file)
         self.J = self.read_matrix(file)
+        self.h = self.read_h(file)
         self.min_cost = self.read_cost(file)
 
-    def get_cost(self, solution):
-        assert len(solution) == self.J.shape[0]
-        H = 0 #np.inf
+    def get_cost(self, sol):
+        assert len(sol) == self.J.shape[0]
+        H = 0
         for i, row in enumerate(self.J):
             for j, value in enumerate(row):
-                H += value * solution[i] * solution[j]
+                H += (value * sol[i] * sol[j]) + (sol[i] * self.h[i])
         return H
 
     def load_file(self):
         filename = 'plantedFrustLoops_Nq%s_Nsg%s_s%s.dat' % (
             self.nb_qubits,
             self.nb_sg,
-            self.id
+            self.id,
         )
         directory = os.path.dirname(os.path.abspath(__file__))
         directory = os.path.join(directory, INSTANCES_DIR)
@@ -68,6 +69,9 @@ class Instance(object):
             row, col, value = file[i].split()
             matrix[int(row), int(col)] += int(value)
         return matrix
+
+    def read_h(self, file):
+        return np.zeros(TOTAL_NB_QUBITS)
 
     def read_cost(self, file):
         values = file[-1].split()
