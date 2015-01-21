@@ -18,7 +18,7 @@ class Solution(object):
     """ Is an instance of the solutions for a given instance problem or id """
 
     def __init__(self, instance=None):
-        pass
+        self.instance = instance
 
 
 class Instance(object):
@@ -33,7 +33,14 @@ class Instance(object):
         self.config = self.read_config(file)
         self.J = self.read_matrix(file)
         self.min_cost = self.read_cost(file)
-        debug()
+
+    def get_cost(self, solution):
+        assert len(solution) == self.J.shape[0]
+        H = 0 #np.inf
+        for i, row in enumerate(self.J):
+            for j, value in enumerate(row):
+                H += value * solution[i] * solution[j]
+        return H
 
     def load_file(self):
         filename = 'plantedFrustLoops_Nq%s_Nsg%s_s%s.dat' % (
@@ -49,11 +56,11 @@ class Instance(object):
         return value
 
     def read_config(self, file):
-        config = []
+        config = np.zeros(TOTAL_NB_QUBITS)
         for i in xrange(VALUES_START, self.nb_qubits + VALUES_START):
-            values = file[i].split()
-            config.append(int(values[1]))
-        return np.array(config)
+            place, value = file[i].split()
+            config[int(place)] += int(value)
+        return config
 
     def read_matrix(self, file):
         matrix = np.zeros((TOTAL_NB_QUBITS, TOTAL_NB_QUBITS))
