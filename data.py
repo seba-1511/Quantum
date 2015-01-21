@@ -33,7 +33,7 @@ class Instance(object):
         self.config = self.read_config(file)
         self.J = self.read_matrix(file)
         self.min_cost = self.read_cost(file)
-        file.close()
+        debug()
 
     def load_file(self):
         filename = 'plantedFrustLoops_Nq%s_Nsg%s_s%s.dat' % (
@@ -44,7 +44,9 @@ class Instance(object):
         directory = os.path.dirname(os.path.abspath(__file__))
         directory = os.path.join(directory, INSTANCES_DIR)
         file = open(directory + filename, 'r')
-        return file.readlines()
+        value = file.readlines()
+        file.close()
+        return value
 
     def read_config(self, file):
         config = []
@@ -61,7 +63,8 @@ class Instance(object):
         return matrix
 
     def read_cost(self, file):
-        pass
+        values = file[-1].split()
+        return int(values[1])
 
 if __name__ == '__main__':
-    print 'No tests implemented'
+    print 'No test implemented'
