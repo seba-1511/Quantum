@@ -34,6 +34,7 @@ class Instance(object):
         self.J = self.read_matrix(file)
         self.h = self.read_h(file)
         self.min_cost = self.read_cost(file)
+        self.print_J()
 
     def get_cost(self, sol):
         assert len(sol) == self.J.shape[0]
@@ -65,7 +66,7 @@ class Instance(object):
 
     def read_matrix(self, file):
         matrix = np.zeros((TOTAL_NB_QUBITS, TOTAL_NB_QUBITS))
-        for i in xrange(self.nb_qubits + VALUES_START + 2, len(file) - 2):
+        for i in xrange(self.nb_qubits + VALUES_START + 1, len(file) - 1):
             row, col, value = file[i].split()
             matrix[int(row), int(col)] += int(value)
         return matrix
@@ -76,6 +77,13 @@ class Instance(object):
     def read_cost(self, file):
         values = file[-1].split()
         return int(values[1])
+
+    def print_J(self):
+        f = open('e2.txt', 'w')
+        for row_id, row in enumerate(self.J):
+            for col_id, col in enumerate(row):
+                if self.J[row_id, col_id] != 0.0:
+                    f.write(str(row_id) + '\t' + str(col_id) + '\t' + str(self.J[row_id, col_id]) + '\n')
 
 if __name__ == '__main__':
     print 'No test implemented'

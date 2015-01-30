@@ -1,5 +1,10 @@
 #!/usr/local/bin/python
 # -*- coding: utf-8 -*-
+from graph.plot import (
+    plot,
+    multiPlot,
+    plotLines,
+)
 from data import (
     Instance,
     Solution,
