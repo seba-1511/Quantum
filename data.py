@@ -78,12 +78,5 @@ class Instance(object):
         values = file[-1].split()
         return int(values[1])
 
-    def print_J(self):
-        f = open('e2.txt', 'w')
-        for row_id, row in enumerate(self.J):
-            for col_id, col in enumerate(row):
-                if self.J[row_id, col_id] != 0.0:
-                    f.write(str(row_id) + '\t' + str(col_id) + '\t' + str(self.J[row_id, col_id]) + '\n')
-
 if __name__ == '__main__':
     print 'No test implemented'
