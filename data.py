@@ -34,7 +34,6 @@ class Instance(object):
         self.J = self.read_matrix(file)
         self.h = self.read_h(file)
         self.min_cost = self.read_cost(file)
-        self.print_J()
 
     def get_cost(self, sol):
         assert len(sol) == self.J.shape[0]
