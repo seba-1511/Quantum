@@ -8,8 +8,6 @@ from graph.plot import (
     plotLines,
 )
 
-from pdb import set_trace as debug
-
 if __name__ == '__main__':
     timing_file = 'tts_frustratedBonds_loopSize6.txt'
     directory = os.path.dirname(os.path.abspath(__file__))
