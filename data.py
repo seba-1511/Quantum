@@ -34,6 +34,23 @@ class Instance(object):
         self.J = self.read_matrix(file)
         self.h = self.read_h(file)
         self.min_cost = self.read_cost(file)
+        self.timing = self.parse_timing()
+
+    def parse_timing(self):
+        timing_file = 'tts_frustratedBonds_loopSize6.txt'
+        directory = os.path.dirname(os.path.abspath(__file__))
+        directory = os.path.join(directory, timing_file)
+        filename = 'plantedFrustLoops_Nq%s_Nsg%s_s%s.dat' % (
+            512,
+            self.nb_sg,
+            self.id,
+        )
+        f = open(directory, 'r')
+        timings = f.readlines()
+        for line in timings:
+            values = line.split()
+            if values[0] == filename:
+                return int(values[1])
 
     def get_cost(self, sol):
         assert len(sol) == self.J.shape[0]
