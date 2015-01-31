@@ -2,7 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import os
+import png
 import numpy as np
+from scipy import misc
+
+import matplotlib.pyplot as plt
 
 from random import randint
 from pdb import set_trace as debug
@@ -93,6 +97,17 @@ class Instance(object):
     def read_cost(self, file):
         values = file[-1].split()
         return int(values[1])
+
+    def print_J(self):
+        filename = 'printed/plantedFrustLoops_Nq%s_Nsg%s_s%s.png' % (
+            self.nb_qubits,
+            self.nb_sg,
+            self.id,
+        )
+        directory = os.path.dirname(os.path.abspath(__file__))
+        directory = os.path.join(directory, filename)
+        img = self.J
+        misc.imsave(directory, img)
 
 if __name__ == '__main__':
     print 'No test implemented'

@@ -12,7 +12,7 @@ def plot(x, y, title='', xlabel='', ylabel=''):
     figure.ylabel(ylabel)
     figure.autoscale(tight=True)
     figure.grid()
-    figure.savefig(title + '.svg', format='svg')
+    figure.savefig(title + '.png', format='png')
 
 
 def multiPlot(plotArray, title='', xlabel='', ylabel=''):
@@ -39,7 +39,7 @@ def multiPlot(plotArray, title='', xlabel='', ylabel=''):
         )
     figure.autoscale(tight=True)
     figure.grid()
-    figure.savefig(title + '.svg', format='svg')
+    figure.savefig(title + '.png', format='png')
 
 
 def plotLines(plotArray, title='', xlabel='', ylabel=''):
@@ -66,7 +66,7 @@ def plotLines(plotArray, title='', xlabel='', ylabel=''):
         )
     figure.autoscale(tight=True)
     figure.grid()
-    figure.savefig(title + '.svg', format='svg')
+    figure.savefig(title + '.png', format='png')
 
 if __name__ == '__main__':
     x = [i for i in xrange(10)]
