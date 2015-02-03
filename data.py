@@ -125,6 +125,7 @@ class Instance(object):
         old_cost = self.get_cost(sol)
         scores = [old_cost, ]
         temperatures = [-T, ]
+        hammings = [hamming_distance(sol, self.config), ]
         print 'Current best: ', old_cost
         while T > 1:
             for i in xrange(n_iter):
@@ -139,9 +140,14 @@ class Instance(object):
                 T = c * T
                 scores.append(old_cost)
                 temperatures.append(-T)
+                hammings.append(hamming_distance(sol), self.config)
                 plotLines([[temperatures, scores], ],
-                          title='Sim_Anneal_T_E', xlabel='T', ylabel='Energy')
-        return sol
+                          title='Sim_Anneal_T_E', xlabel='-T', ylabel='Energy')
+                plotLines([[temperatures, hammings], ],
+                          title='Sim_Anneal_T_Hamming', xlabel='-T', ylabel='Hamming')
+                plotLines([[scores, hammings], ],
+                          title='Sim_Anneal_E_Hamming', xlabel='Energy', ylabel='Hamming')
+        return (sol, old_cost)
 
     def run_GA(self):
         """

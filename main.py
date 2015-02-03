@@ -44,5 +44,5 @@ if __name__ == '__main__':
     print 'Cost of config:', data.get_cost(data.config)
     print 'Timing: ', data.timing
     sa = data.run_SA()
-    print 'Simulated Annealing: ', sa
+    print 'Simulated Annealing: ', sa[1]
     debug()
