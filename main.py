@@ -39,12 +39,6 @@ def get_all_instances(nb_sg=None, nb_qubits=None, id=None):
                 instances.append(parse_instance(file))
     return instances
 
-
-def hamming_distance(str1, str2):
-    """Implements the Hamming distance between 2 strings."""
-    assert(len(str1) == len(str2))
-    return sum([1 if x != y else 0 for x, y in zip(str1, str2)])
-
 if __name__ == '__main__':
     data = Instance(nb_sg=504, id=199)
     print 'Cost of config:', data.get_cost(data.config)

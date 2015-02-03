@@ -6,15 +6,20 @@ import png
 import numpy as np
 from scipy import misc
 
-import matplotlib.pyplot as plt
-
-from random import randint
+from random import randint, rand
+from math import log
 from pdb import set_trace as debug
 
 TOTAL_NB_QUBITS = 512
 INSTANCES_DIR = 'plantedInstances/'
 SOLUTIONS_DIR = 'solutionsForInstances/'
 VALUES_START = 4
+
+
+def hamming_distance(str1, str2):
+    """Implements the Hamming distance between 2 strings."""
+    assert(len(str1) == len(str2))
+    return sum([1 if x != y else 0 for x, y in zip(str1, str2)])
 
 
 class Solution(object):
@@ -108,6 +113,33 @@ class Instance(object):
         directory = os.path.join(directory, filename)
         img = self.J
         misc.imsave(directory, img)
+
+    def run_SA(self, T=500, c=0.8, n_iter=100):
+        """
+            Implements a simulated annealing procedure
+            to find the lowest energy for this given instance problem
+        """
+        possible_values = (-1, 1)
+        sol = np.array([possible_values[randint(len(possible_values))]
+                        for i in xrange(self.config.shape[0])])
+        old_cost = self.get_cost(sol)
+        while T > 1:
+            for i in xrange(n_iter):
+                swap = randint(sol.shape[0])
+                new_sol = sol.copy()
+                new_sol[swap] = new_sol[swap] * -1
+                new_cost = self.get_cost(new_sol)
+                if new_cost < new_cost or (old_cost - new_cost) < T * log(rand()):
+                    sol = new_sol
+                T = c * T
+        return sol
+
+    def run_GA(self):
+        """
+            Implements a genetic algorithm
+            to find the lowest energy for this given instance problem.
+        """
+        pass
 
 if __name__ == '__main__':
     print 'No test implemented'
