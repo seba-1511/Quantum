@@ -9,6 +9,7 @@ from scipy import misc
 from random import randint, random, choice
 from math import log
 from pdb import set_trace as debug
+from graph.plot import plotLines
 
 TOTAL_NB_QUBITS = 512
 INSTANCES_DIR = 'plantedInstances/'
@@ -122,6 +123,8 @@ class Instance(object):
         val = (-1, 1)
         sol = np.array([choice(val) for i in xrange(self.config.shape[0])])
         old_cost = self.get_cost(sol)
+        scores = [old_cost, ]
+        temperatures = [-T, ]
         print 'Current best: ', old_cost
         while T > 1:
             for i in xrange(n_iter):
@@ -134,6 +137,10 @@ class Instance(object):
                     old_cost = new_cost
                     print 'New best: ', new_cost
                 T = c * T
+                scores.append(old_cost)
+                temperatures.append(-T)
+                plotLines([[temperatures, scores], ],
+                          title='Sim_Anneal_T_E', xlabel='T', ylabel='Energy')
         return sol
 
     def run_GA(self):

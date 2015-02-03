@@ -43,5 +43,6 @@ if __name__ == '__main__':
     data = Instance(nb_sg=504, id=199)
     print 'Cost of config:', data.get_cost(data.config)
     print 'Timing: ', data.timing
-    print 'Simulated Annealing: ', data.run_SA()
+    sa = data.run_SA()
+    print 'Simulated Annealing: ', sa
     debug()
