@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from pdb import set_trace as debug
 
 
@@ -13,6 +14,7 @@ def plot(x, y, title='', xlabel='', ylabel=''):
     figure.autoscale(tight=True)
     figure.grid()
     figure.savefig(title + '.png', format='png')
+    plt.close()
 
 
 def multiPlot(plotArray, title='', xlabel='', ylabel='', xscale='linear', yscale='linear'):
@@ -42,6 +44,7 @@ def multiPlot(plotArray, title='', xlabel='', ylabel='', xscale='linear', yscale
     figure.autoscale(tight=True)
     figure.grid()
     figure.savefig(title + '.png', format='png')
+    plt.close()
 
 
 def plotLines(plotArray, title='', xlabel='', ylabel='', xscale='linear', yscale='linear'):
@@ -71,13 +74,13 @@ def plotLines(plotArray, title='', xlabel='', ylabel='', xscale='linear', yscale
     figure.autoscale(tight=True)
     figure.grid()
     figure.savefig(title + '.png', format='png')
+    plt.close()
 
 def plot3D(plotArray, title='', xlabel='', ylabel='', zlabel=''):
     """
         Given a plotArray = [X, Y, Z] this will save a 3D
         figure of the scattered data.
     """
-    from mpl_toolkits.mplot3d import Axes3D
     X, Y, Z = plotArray
     figure = plt.figure()
     ax = Axes3D(figure)
@@ -87,6 +90,7 @@ def plot3D(plotArray, title='', xlabel='', ylabel='', zlabel=''):
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
     figure.savefig(title + '.png', format='png')
+    plt.close(figure)
 
 
 def plotLines3D(plotArray, title='', xlabel='', ylabel='', zlabel=''):
@@ -94,7 +98,6 @@ def plotLines3D(plotArray, title='', xlabel='', ylabel='', zlabel=''):
         Given a plotArray = [X, Y, Z] this will save a 3D
         figure of the plotted data.
     """
-    from mpl_toolkits.mplot3d import Axes3D
     X, Y, Z = plotArray
     figure = plt.figure()
     ax = Axes3D(figure)
@@ -104,13 +107,13 @@ def plotLines3D(plotArray, title='', xlabel='', ylabel='', zlabel=''):
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
     figure.savefig(title + '.png', format='png')
+    plt.close(figure)
 
 def plotSurface3D(plotArray, title='', xlabel='', ylabel='', zlabel=''):
     """
         Given a plotArray = [X, Y, Z] this will save a 3D surface
         figure of the plotted data.
     """
-    from mpl_toolkits.mplot3d import Axes3D
     X, Y, Z = plotArray
     figure = plt.figure()
     ax = Axes3D(figure)
@@ -120,6 +123,7 @@ def plotSurface3D(plotArray, title='', xlabel='', ylabel='', zlabel=''):
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
     figure.savefig(title + '.png', format='png')
+    plt.close(figure)
 
 
 if __name__ == '__main__':
