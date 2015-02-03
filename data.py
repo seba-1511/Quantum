@@ -9,7 +9,13 @@ from scipy import misc
 from random import (randint, random, choice)
 from math import log
 from pdb import set_trace as debug
-from graph.plot import (plotLines, multiPlot, plot3D)
+from graph.plot import (
+    plotLines,
+    multiPlot,
+    plot3D,
+    plotLines3D,
+    plotSurface3D
+)
 
 TOTAL_NB_QUBITS = 512
 INSTANCES_DIR = 'plantedInstances/'

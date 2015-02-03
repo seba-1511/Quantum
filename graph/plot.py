@@ -98,7 +98,23 @@ def plotLines3D(plotArray, title='', xlabel='', ylabel='', zlabel=''):
     X, Y, Z = plotArray
     figure = plt.figure()
     ax = Axes3D(figure)
-    ax.scatter(X, Y, Z)
+    ax.plot_wireframe(X, Y, Z)
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_zlabel(zlabel)
+    figure.savefig(title + '.png', format='png')
+
+def plotSurface3D(plotArray, title='', xlabel='', ylabel='', zlabel=''):
+    """
+        Given a plotArray = [X, Y, Z] this will save a 3D surface
+        figure of the plotted data.
+    """
+    from mpl_toolkits.mplot3d import Axes3D
+    X, Y, Z = plotArray
+    figure = plt.figure()
+    ax = Axes3D(figure)
+    ax.plot_surface(X, Y, Z)
     ax.set_title(title)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
