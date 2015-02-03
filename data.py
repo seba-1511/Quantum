@@ -6,10 +6,10 @@ import png
 import numpy as np
 
 from scipy import misc
-from random import randint, random, choice
+from random import (randint, random, choice)
 from math import log
 from pdb import set_trace as debug
-from graph.plot import plotLines
+from graph.plot import (plotLines, multiPlot, plot3D)
 
 TOTAL_NB_QUBITS = 512
 INSTANCES_DIR = 'plantedInstances/'
@@ -124,7 +124,7 @@ class Instance(object):
         sol = np.array([choice(val) for i in xrange(self.config.shape[0])])
         old_cost = self.get_cost(sol)
         scores = [old_cost, ]
-        temperatures = [-T, ]
+        temperatures = [T, ]
         hammings = [hamming_distance(sol, self.config), ]
         print 'Current best: ', old_cost
         while T > 1:
@@ -139,14 +139,18 @@ class Instance(object):
                     print 'New best: ', new_cost
                 T = c * T
                 scores.append(old_cost)
-                temperatures.append(-T)
-                hammings.append(hamming_distance(sol), self.config)
+                temperatures.append(T)
+                hammings.append(hamming_distance(sol, self.config))
+                # Plotting:
                 plotLines([[temperatures, scores], ],
-                          title='Sim_Anneal_T_E', xlabel='-T', ylabel='Energy')
+                          title='Sim_Anneal_T_E', xlabel='T',
+                          ylabel='Energy', xscale='log')
                 plotLines([[temperatures, hammings], ],
-                          title='Sim_Anneal_T_Hamming', xlabel='-T', ylabel='Hamming')
-                plotLines([[scores, hammings], ],
-                          title='Sim_Anneal_E_Hamming', xlabel='Energy', ylabel='Hamming')
+                          title='Sim_Anneal_T_Hamming', xlabel='T',
+                          ylabel='Hamming', xscale='log')
+                multiPlot([[scores, hammings], ],
+                          title='Sim_Anneal_E_Hamming', xlabel='Energy',
+                          ylabel='Hamming')
         return (sol, old_cost)
 
     def run_GA(self):

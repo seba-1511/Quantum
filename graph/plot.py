@@ -15,10 +15,67 @@ def plot(x, y, title='', xlabel='', ylabel=''):
     figure.savefig(title + '.png', format='png')
 
 
-def multiPlot(plotArray, title='', xlabel='', ylabel=''):
+def multiPlot(plotArray, title='', xlabel='', ylabel='', xscale='linear', yscale='linear'):
     """
         plotArray is of the form: [[X1, Y1], [X2, Y2]]
         Where Xi, Yi are arrays of of the values to plot.
+    """
+    uniquePyPlot.clf()
+    figure = uniquePyPlot
+    figure.title(title)
+    figure.xlabel(xlabel)
+    figure.ylabel(ylabel)
+    markers = '+,.1234'
+    colors = 'rbgyo'
+    if len(plotArray) > 5:
+        print 'More than 5 plots given as parameters (plotArray)'
+        return False
+    for i, (Xi, Yi) in enumerate(plotArray):
+        figure.scatter(
+            Xi,
+            Yi,
+            marker=markers[i],
+            c=colors[i]
+        )
+    figure.xscale(xscale)
+    figure.yscale(yscale)
+    figure.autoscale(tight=True)
+    figure.grid()
+    figure.savefig(title + '.png', format='png')
+
+
+def plotLines(plotArray, title='', xlabel='', ylabel='', xscale='linear', yscale='linear'):
+    """
+        plotArray is of the form: [[X1, Y1], [X2, Y2]]
+        Where Xi, Yi are arrays of of the values to plot.
+    """
+    uniquePyPlot.clf()
+    figure = uniquePyPlot
+    figure.title(title)
+    figure.xlabel(xlabel)
+    figure.ylabel(ylabel)
+    markers = '+,.1234'
+    colors = 'rbgyo'
+    if len(plotArray) > 5:
+        print 'More than 5 plots given as parameters (plotArray)'
+        return False
+    for i, (Xi, Yi) in enumerate(plotArray):
+        figure.plot(
+            Xi,
+            Yi,
+            marker=markers[i],
+            c=colors[i]
+        )
+    figure.xscale(xscale)
+    figure.yscale(yscale)
+    figure.autoscale(tight=True)
+    figure.grid()
+    figure.savefig(title + '.png', format='png')
+
+def plot3D(plotArray, title='', xlabel='', ylabel='', zlabel=''):
+    """
+        Given a plotArray = [X, Y, Z] this will save a 3D
+        figure of the scattered data.
     """
     uniquePyPlot.clf()
     figure = uniquePyPlot
@@ -42,31 +99,12 @@ def multiPlot(plotArray, title='', xlabel='', ylabel=''):
     figure.savefig(title + '.png', format='png')
 
 
-def plotLines(plotArray, title='', xlabel='', ylabel=''):
+def plotLines3D(plotArray, title='', xlabel='', ylabel='', zlabel=''):
     """
-        plotArray is of the form: [[X1, Y1], [X2, Y2]]
-        Where Xi, Yi are arrays of of the values to plot.
+        Given a plotArray = [X, Y, Z] this will save a 3D
+        figure of the plotted data.
     """
-    uniquePyPlot.clf()
-    figure = uniquePyPlot
-    figure.title(title)
-    figure.xlabel(xlabel)
-    figure.ylabel(ylabel)
-    markers = '+,.1234'
-    colors = 'rbgyo'
-    if len(plotArray) > 5:
-        print 'More than 5 plots given as parameters (plotArray)'
-        return False
-    for i, (Xi, Yi) in enumerate(plotArray):
-        figure.plot(
-            Xi,
-            Yi,
-            marker=markers[i],
-            c=colors[i]
-        )
-    figure.autoscale(tight=True)
-    figure.grid()
-    figure.savefig(title + '.png', format='png')
+    pass
 
 if __name__ == '__main__':
     x = [i for i in xrange(10)]
