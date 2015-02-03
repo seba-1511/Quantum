@@ -4,9 +4,9 @@
 import os
 import png
 import numpy as np
-from scipy import misc
 
-from random import randint, rand
+from scipy import misc
+from random import randint, random, choice
 from math import log
 from pdb import set_trace as debug
 
@@ -119,18 +119,20 @@ class Instance(object):
             Implements a simulated annealing procedure
             to find the lowest energy for this given instance problem
         """
-        possible_values = (-1, 1)
-        sol = np.array([possible_values[randint(len(possible_values))]
-                        for i in xrange(self.config.shape[0])])
+        val = (-1, 1)
+        sol = np.array([choice(val) for i in xrange(self.config.shape[0])])
         old_cost = self.get_cost(sol)
+        print 'Current best: ', old_cost
         while T > 1:
             for i in xrange(n_iter):
-                swap = randint(sol.shape[0])
+                swap = randint(0, sol.shape[0] - 1)
                 new_sol = sol.copy()
                 new_sol[swap] = new_sol[swap] * -1
                 new_cost = self.get_cost(new_sol)
-                if new_cost < new_cost or (old_cost - new_cost) < T * log(rand()):
+                if new_cost < old_cost or (old_cost - new_cost) < T * log(random()):
                     sol = new_sol
+                    old_cost = new_cost
+                    print 'New best: ', new_cost
                 T = c * T
         return sol
 

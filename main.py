@@ -42,8 +42,6 @@ def get_all_instances(nb_sg=None, nb_qubits=None, id=None):
 if __name__ == '__main__':
     data = Instance(nb_sg=504, id=199)
     print 'Cost of config:', data.get_cost(data.config)
-    print 'Real optimal: ', data.min_cost
     print 'Timing: ', data.timing
-    data.print_J()
-    inst = get_all_instances(nb_sg=420)
+    print 'Simulated Annealing: ', data.run_SA()
     debug()
