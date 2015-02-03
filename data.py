@@ -151,6 +151,8 @@ class Instance(object):
                 multiPlot([[scores, hammings], ],
                           title='Sim_Anneal_E_Hamming', xlabel='Energy',
                           ylabel='Hamming')
+                plot3D([temperatures, hammings, scores], title='3D_E_T_Ham',
+                       xlabel='T', ylabel='Hamming', zlabel='E')
         return (sol, old_cost)
 
     def run_GA(self):
