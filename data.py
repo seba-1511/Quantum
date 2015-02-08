@@ -76,9 +76,15 @@ class Instance(object):
                 H += (value * sol[i] * sol[j]) + (sol[i] * self.h[i])
         return H
 
-    def get_diff_cost(self, sol, cost, col):
+    def get_diff_cost(self, sol, prev_sol, cost, col):
         differential = 0
-        return cost - differential
+        for i in xrange(col - 1, col + 1):
+            for j, value in enumerate(self.J[i]):
+                differential -= (value * prev_sol[i]
+                                 * prev_sol[j]) + (self.h[i] * prev_sol[i])
+                differential += (value * sol[i]
+                                 * sol[j]) + (self.h[i] * sol[i])
+        return cost + differential
 
     def load_file(self):
         filename = 'plantedFrustLoops_Nq%s_Nsg%s_s%s.dat' % (
@@ -144,7 +150,7 @@ class Instance(object):
                     swap = randint(0, sol.shape[0] - 1)
                     new_sol = sol.copy()
                     new_sol[swap] = new_sol[swap] * -1
-                    new_cost = self.get_diff_cost(new_sol, old_cost, swap)
+                    new_cost = self.get_diff_cost(new_sol, sol, old_cost, swap)
                     if new_cost < old_cost or (old_cost - new_cost) < accept_prob:
                         sol = new_sol
                         old_cost = new_cost
@@ -175,4 +181,14 @@ class Instance(object):
         pass
 
 if __name__ == '__main__':
-    print 'No test implemented'
+    d = Instance()
+    val = (-1, 1)
+    sol = np.array([choice(val) for i in xrange(d.config.shape[0])])
+    swap = randint(0, sol.shape[0] - 1)
+    new_sol = sol.copy()
+    new_sol[swap] = new_sol[swap] * -1
+    cost = d.get_cost(sol)
+    print 'Assertion'
+    print d.get_diff_cost(new_sol, sol, cost, swap), d.get_cost(new_sol)
+    assert(d.get_cost(new_sol) == d.get_diff_cost(new_sol, sol, cost, swap))
+    print 'Test passed', d.get_diff_cost(new_sol, sol, cost, swap), d.get_cost(new_sol)

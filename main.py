@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import re
+import numpy as np
 from graph.plot import (
     plot,
     multiPlot,
@@ -46,7 +47,7 @@ if __name__ == '__main__':
     sa = data.run_SA(T=10)
     print 'Simulated Annealing: ', sa[1]
     print 'Loading all instances...'
-    instances = get_all_instances(nb_sg=420)
+    # instances = get_all_instances(nb_sg=420)
     print 'Solving all instances...'
     # score = [i.run_SA() for i in instances]
-    debug()
+    # debug()
