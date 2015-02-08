@@ -76,6 +76,10 @@ class Instance(object):
                 H += (value * sol[i] * sol[j]) + (sol[i] * self.h[i])
         return H
 
+    def get_diff_cost(self, sol, cost, col):
+        differential = 0
+        return cost - differential
+
     def load_file(self):
         filename = 'plantedFrustLoops_Nq%s_Nsg%s_s%s.dat' % (
             self.nb_qubits,
@@ -121,7 +125,7 @@ class Instance(object):
         img = self.J
         misc.imsave(directory, img)
 
-    def run_SA(self, T=500, c=0.8, n_iter=100):
+    def run_SA(self, T=10, c=0.8, n_iter=100, n_sweeps=10, T_min=1):
         """
             Implements a simulated annealing procedure
             to find the lowest energy for this given instance problem
@@ -133,16 +137,18 @@ class Instance(object):
         temperatures = [T, ]
         hammings = [hamming_distance(sol, self.config), ]
         print 'Current best: ', old_cost
-        while T > 1:
-            for i in xrange(n_iter):
-                swap = randint(0, sol.shape[0] - 1)
-                new_sol = sol.copy()
-                new_sol[swap] = new_sol[swap] * -1
-                new_cost = self.get_cost(new_sol)
-                if new_cost < old_cost or (old_cost - new_cost) < T * log(random()):
-                    sol = new_sol
-                    old_cost = new_cost
-                    print 'New best: ', new_cost
+        while T > T_min:
+            accept_prob = T * log(random())
+            for sweep in xrange(n_sweeps):
+                for i in xrange(len(sol)):
+                    swap = randint(0, sol.shape[0] - 1)
+                    new_sol = sol.copy()
+                    new_sol[swap] = new_sol[swap] * -1
+                    new_cost = self.get_diff_cost(new_sol, old_cost, swap)
+                    if new_cost < old_cost or (old_cost - new_cost) < accept_prob:
+                        sol = new_sol
+                        old_cost = new_cost
+                        print 'New best: ', new_cost
                 T = c * T
                 scores.append(old_cost)
                 temperatures.append(T)
