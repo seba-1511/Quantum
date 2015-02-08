@@ -16,6 +16,7 @@ from graph.plot import (
     plotLines3D,
     plotSurface3D
 )
+from performance import timeit
 
 TOTAL_NB_QUBITS = 512
 INSTANCES_DIR = 'plantedInstances/'
@@ -68,6 +69,7 @@ class Instance(object):
             if values[0] == filename:
                 return int(values[1])
 
+    @timeit
     def get_cost(self, sol):
         assert len(sol) == self.J.shape[0]
         H = 0
@@ -76,15 +78,21 @@ class Instance(object):
                 H += (value * sol[i] * sol[j]) + (sol[i] * self.h[i])
         return H
 
+    @timeit
     def get_diff_cost(self, sol, prev_sol, cost, col):
-        differential = 0
-        for i in xrange(col - 1, col + 1):
-            for j, value in enumerate(self.J[i]):
-                differential -= (value * prev_sol[i]
-                                 * prev_sol[j]) + (self.h[i] * prev_sol[i])
-                differential += (value * sol[i]
-                                 * sol[j]) + (self.h[i] * sol[i])
-        return cost + differential
+        # nb_qubits = len(sol)
+        # sub = prev_sol[col] * np.sum([(self.J[col, i] * prev_sol[i]) + self.h[i]
+        #                               for i in xrange(nb_qubits)])
+        # add = sol[col] * np.sum([(self.J[col, i] * sol[i]) + self.h[i]
+        #                          for i in xrange(nb_qubits)])
+
+
+        add, sub = 0.0, 0.0
+        # for i in xrange(col, col+1):
+        for j in xrange(len(sol)):
+            sub += self.J[col, j] * prev_sol[col] * prev_sol[j] + self.h[col] * prev_sol[col]
+            sub += self.J[col, j] * sol[col] * sol[j] + self.h[col] * prev_sol[col]
+        return cost - sub + add
 
     def load_file(self):
         filename = 'plantedFrustLoops_Nq%s_Nsg%s_s%s.dat' % (
@@ -188,7 +196,5 @@ if __name__ == '__main__':
     new_sol = sol.copy()
     new_sol[swap] = new_sol[swap] * -1
     cost = d.get_cost(sol)
-    print 'Assertion'
-    print d.get_diff_cost(new_sol, sol, cost, swap), d.get_cost(new_sol)
-    assert(d.get_cost(new_sol) == d.get_diff_cost(new_sol, sol, cost, swap))
-    print 'Test passed', d.get_diff_cost(new_sol, sol, cost, swap), d.get_cost(new_sol)
+    print d.get_diff_cost(new_sol, sol, cost, swap), cost
+    assert(cost == d.get_diff_cost(new_sol, sol, cost, swap))

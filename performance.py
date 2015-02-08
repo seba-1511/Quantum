@@ -11,5 +11,7 @@ def timeit(fn):
         start = time.time()
         res = fn(*args, **kwargs)
         end = time.time()
-        print "@timeit: " + fn.func_name + " took " + str(end - start) + " seconds"
+        name = fn.func_name
+        print "@timeit: " + name + " took " + str(end - start) + " seconds"
         return res
+    return measure_time
