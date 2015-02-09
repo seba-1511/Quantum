@@ -44,10 +44,10 @@ if __name__ == '__main__':
     data = Instance(nb_sg=504, id=199)
     print 'Cost of config:', data.get_cost(data.config)
     print 'Timing: ', data.timing
-    # sa = data.run_SA(T=10)
-    # print 'Simulated Annealing: ', sa[1]
+    sa = data.run_SA(T=10)
+    print 'Simulated Annealing: ', sa[1]
     print 'Loading all instances...'
-    instances = [get_all_instances(nb_sg=420) for i in xrange(10)]
+    instances = get_all_instances(nb_sg=420)
     print 'Solving all instances...'
-    # score = [i.run_SA() for i in instances]
+    score = [i.run_SA() for i in instances]
     debug()

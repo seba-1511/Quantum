@@ -69,7 +69,6 @@ class Instance(object):
             if values[0] == filename:
                 return int(values[1])
 
-    @timeit
     def get_cost(self, sol):
         assert len(sol) == self.J.shape[0]
         H = 0
@@ -78,7 +77,6 @@ class Instance(object):
                 H += (value * sol[i] * sol[j]) + (sol[i] * self.h[i])
         return H
 
-    @timeit
     def get_diff_cost(self, sol, prev_sol, cost, col):
         multiplier = self.J[:, col] + self.J[col, :]
         add = np.dot(multiplier, sol) * sol[col]
@@ -130,6 +128,7 @@ class Instance(object):
         img = self.J
         misc.imsave(directory, img)
 
+    @timeit
     def run_SA(self, T=10, c=0.8, n_iter=100, n_sweeps=10, T_min=1):
         """
             Implements a simulated annealing procedure
@@ -153,7 +152,6 @@ class Instance(object):
                     if new_cost < old_cost or (old_cost - new_cost) < accept_prob:
                         sol = new_sol
                         old_cost = new_cost
-                        print 'New best: ', new_cost
                 T = c * T
                 scores.append(old_cost)
                 temperatures.append(T)
