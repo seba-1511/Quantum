@@ -3,6 +3,7 @@
 import os
 import re
 import numpy as np
+import time
 from graph.plot import (
     plot,
     multiPlot,
@@ -13,6 +14,7 @@ from data import (
     Solution,
 )
 from pdb import set_trace as debug
+from multiprocessing.pool import Pool
 
 
 def parse_instance(file):
@@ -40,6 +42,16 @@ def get_all_instances(nb_sg=None, nb_qubits=None, id=None):
                 instances.append(parse_instance(file))
     return instances
 
+
+def pool_SA(instance):
+    start = time.time()
+    while True:
+        conf, cost = instance.run_SA()
+        if cost == instance.min_cost:
+            break
+    end = time.time()
+    return (end - start)
+
 if __name__ == '__main__':
     data = Instance(nb_sg=504, id=199)
     print 'Cost of config:', data.get_cost(data.config)
@@ -47,7 +59,7 @@ if __name__ == '__main__':
     sa = data.run_SA(T=10)
     print 'Simulated Annealing: ', sa[1]
     print 'Loading all instances...'
-    instances = get_all_instances(nb_sg=420)
+    instances = get_all_instances(nb_sg=420, id=199)
     print 'Solving all instances...'
-    score = [i.run_SA() for i in instances]
-    debug()
+    p = Pool()
+    score = p.map(pool_SA, instances)

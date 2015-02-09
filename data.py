@@ -129,7 +129,7 @@ class Instance(object):
         misc.imsave(directory, img)
 
     @timeit
-    def run_SA(self, T=10, c=0.8, n_iter=100, n_sweeps=10, T_min=1):
+    def run_SA(self, T=10, c=0.9, n_iter=100, n_sweeps=10, T_min=1):
         """
             Implements a simulated annealing procedure
             to find the lowest energy for this given instance problem
@@ -168,6 +168,7 @@ class Instance(object):
                           ylabel='Hamming')
                 plot3D([temperatures, hammings, scores], title='3D_E_T_Ham',
                        xlabel='T', ylabel='Hamming', zlabel='E')
+        print 'Found best for ', self.id, ' ', old_cost
         return (sol, old_cost)
 
     def run_GA(self):
