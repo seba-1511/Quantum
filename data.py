@@ -85,14 +85,15 @@ class Instance(object):
         #                               for i in xrange(nb_qubits)])
         # add = sol[col] * np.sum([(self.J[col, i] * sol[i]) + self.h[i]
         #                          for i in xrange(nb_qubits)])
-
-
-        add, sub = 0.0, 0.0
-        # for i in xrange(col, col+1):
-        for j in xrange(len(sol)):
-            sub += self.J[col, j] * prev_sol[col] * prev_sol[j] + self.h[col] * prev_sol[col]
-            sub += self.J[col, j] * sol[col] * sol[j] + self.h[col] * prev_sol[col]
-        return cost - sub + add
+        add = 0.0
+        sub = 0.0
+        for i in xrange(TOTAL_NB_QUBITS):
+            multiplier = (self.J[col, i] + self.J[i, col])
+            add += sol[i] * multiplier
+            sub += prev_sol[i] * multiplier
+        add *= sol[col]
+        sub *= prev_sol[col]
+        return cost - (1 * sub) + (1 * add)
 
     def load_file(self):
         filename = 'plantedFrustLoops_Nq%s_Nsg%s_s%s.dat' % (
@@ -195,6 +196,8 @@ if __name__ == '__main__':
     swap = randint(0, sol.shape[0] - 1)
     new_sol = sol.copy()
     new_sol[swap] = new_sol[swap] * -1
-    cost = d.get_cost(sol)
-    print d.get_diff_cost(new_sol, sol, cost, swap), cost
-    assert(cost == d.get_diff_cost(new_sol, sol, cost, swap))
+    prev_cost = d.get_cost(sol)
+    cost = d.get_cost(new_sol)
+    diff_cost = d.get_diff_cost(new_sol, sol, prev_cost, swap)
+    print diff_cost, cost
+    assert(cost == diff_cost)
