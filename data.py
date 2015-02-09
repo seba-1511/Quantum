@@ -80,19 +80,9 @@ class Instance(object):
 
     @timeit
     def get_diff_cost(self, sol, prev_sol, cost, col):
-        # nb_qubits = len(sol)
-        # sub = prev_sol[col] * np.sum([(self.J[col, i] * prev_sol[i]) + self.h[i]
-        #                               for i in xrange(nb_qubits)])
-        # add = sol[col] * np.sum([(self.J[col, i] * sol[i]) + self.h[i]
-        #                          for i in xrange(nb_qubits)])
-        add = 0.0
-        sub = 0.0
-        for i in xrange(TOTAL_NB_QUBITS):
-            multiplier = (self.J[col, i] + self.J[i, col])
-            add += sol[i] * multiplier
-            sub += prev_sol[i] * multiplier
-        add *= sol[col]
-        sub *= prev_sol[col]
+        multiplier = self.J[:, col] + self.J[col, :]
+        add = np.dot(multiplier, sol) * sol[col]
+        sub = np.dot(multiplier, prev_sol) * prev_sol[col]
         return cost - (1 * sub) + (1 * add)
 
     def load_file(self):
