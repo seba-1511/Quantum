@@ -136,11 +136,11 @@ class Instance(object):
             to find the lowest energy for this given instance problem
         """
         val = (-1, 1)
-        sol = np.array([choice(val) for i in xrange(self.config.shape[0])])
+        sol = np.array([choice(val) for i in xrange(TOTAL_NB_QUBITS)])
         old_cost = self.get_cost(sol)
-        scores = [old_cost, ]
-        temperatures = [T, ]
-        hammings = [hamming_distance(sol, self.config), ]
+        # scores = [old_cost, ]
+        # temperatures = [T, ]
+        # hammings = [hamming_distance(sol, self.config), ]
         print 'Current best for ', self.id, ' ', old_cost, ' config: ', self.min_cost
         while T > T_min:
             accept_prob = T * log(random())
@@ -154,9 +154,9 @@ class Instance(object):
                         sol = new_sol
                         old_cost = new_cost
                 T = c * T
-                scores.append(old_cost)
-                temperatures.append(T)
-                hammings.append(hamming_distance(sol, self.config))
+                # scores.append(old_cost)
+                # temperatures.append(T)
+                # hammings.append(hamming_distance(sol, self.config))
                 # Plotting:
                 # plotLines([[temperatures, scores], ],
                 #           title='Sim_Anneal_T_E', xlabel='T',
