@@ -15,6 +15,7 @@ from data import (
 )
 from pdb import set_trace as debug
 from multiprocessing.pool import Pool
+import cPickle as pk
 
 
 def parse_instance(file):
@@ -44,22 +45,33 @@ def get_all_instances(nb_sg=None, nb_qubits=None, id=None):
 
 
 def pool_SA(instance):
+    print 'Started task on instance', instance.filename
     start = time.time()
     while True:
-        conf, cost = instance.run_SA()
+        conf, cost = instance.run_SA(
+            T=10,
+            c=0.927,
+            n_sweeps=1000,
+            T_min=0.00001
+        )
         if cost == instance.min_cost:
             break
     end = time.time()
-    return (end - start)
+    return (instance.filename, (end - start))
 
 if __name__ == '__main__':
-    data = Instance(nb_sg=504, id=199)
-    print 'Cost of config:', data.get_cost(data.config)
-    print 'Timing: ', data.timing
-    sa = data.run_SA(T=10)
-    print 'Simulated Annealing: ', sa[1]
+    # data = Instance(nb_sg=504, id=199)
+    # print 'Cost of config:', data.get_cost(data.config)
+    # print 'Timing: ', data.timing
+    # sa = data.run_SA(T=10)
+    # print 'Simulated Annealing: ', sa[1]
     print 'Loading all instances...'
-    instances = get_all_instances(nb_sg=420, id=199)
-    print 'Solving all instances...'
-    p = Pool()
-    score = p.map(pool_SA, instances)
+    nb_sg = 420
+    instances = get_all_instances(nb_sg=nb_sg)
+    p = Pool(processes=1)
+    for epoch in xrange(10):
+        print 'Solving all instances...'
+        scores = p.map(pool_SA, instances)
+        f = open('runtimes_nbsg' + str(nb_sg) + '_' + str(epoch) + '.pkl')
+        pk.dump(scores, f, protocol=-1)
+        f.close()

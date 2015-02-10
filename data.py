@@ -89,6 +89,7 @@ class Instance(object):
             self.nb_sg,
             self.id,
         )
+        self.filename = filename
         directory = os.path.dirname(os.path.abspath(__file__))
         directory = os.path.join(directory, INSTANCES_DIR)
         file = open(directory + filename, 'r')
@@ -129,7 +130,7 @@ class Instance(object):
         misc.imsave(directory, img)
 
     @timeit
-    def run_SA(self, T=10, c=0.9, n_iter=100, n_sweeps=10, T_min=1):
+    def run_SA(self, T=10, c=0.9, n_sweeps=10, T_min=1):
         """
             Implements a simulated annealing procedure
             to find the lowest energy for this given instance problem
@@ -140,7 +141,7 @@ class Instance(object):
         scores = [old_cost, ]
         temperatures = [T, ]
         hammings = [hamming_distance(sol, self.config), ]
-        print 'Current best: ', old_cost
+        print 'Current best for ', self.id, ' ', old_cost, ' config: ', self.min_cost
         while T > T_min:
             accept_prob = T * log(random())
             for sweep in xrange(n_sweeps):
@@ -157,18 +158,18 @@ class Instance(object):
                 temperatures.append(T)
                 hammings.append(hamming_distance(sol, self.config))
                 # Plotting:
-                plotLines([[temperatures, scores], ],
-                          title='Sim_Anneal_T_E', xlabel='T',
-                          ylabel='Energy', xscale='log')
-                plotLines([[temperatures, hammings], ],
-                          title='Sim_Anneal_T_Hamming', xlabel='T',
-                          ylabel='Hamming', xscale='log')
-                multiPlot([[scores, hammings], ],
-                          title='Sim_Anneal_E_Hamming', xlabel='Energy',
-                          ylabel='Hamming')
-                plot3D([temperatures, hammings, scores], title='3D_E_T_Ham',
-                       xlabel='T', ylabel='Hamming', zlabel='E')
-        print 'Found best for ', self.id, ' ', old_cost
+                # plotLines([[temperatures, scores], ],
+                #           title='Sim_Anneal_T_E', xlabel='T',
+                #           ylabel='Energy', xscale='log')
+                # plotLines([[temperatures, hammings], ],
+                #           title='Sim_Anneal_T_Hamming', xlabel='T',
+                #           ylabel='Hamming', xscale='log')
+                # multiPlot([[scores, hammings], ],
+                #           title='Sim_Anneal_E_Hamming', xlabel='Energy',
+                #           ylabel='Hamming')
+                # plot3D([temperatures, hammings, scores], title='3D_E_T_Ham',
+                #        xlabel='T', ylabel='Hamming', zlabel='E')
+        print 'Found best for ', self.id, ' ', old_cost, ' config: ', self.min_cost
         return (sol, old_cost)
 
     def run_GA(self):
