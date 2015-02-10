@@ -52,7 +52,7 @@ def pool_SA(instance):
             T=10,
             c=0.927,
             n_sweeps=1000,
-            T_min=0.000000001
+            T_min=0.0000001
         )
         if cost == instance.min_cost:
             break
