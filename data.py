@@ -25,11 +25,6 @@ SOLUTIONS_DIR = 'solutionsForInstances/'
 VALUES_START = 4
 
 
-def hamming_distance(str1, str2):
-    """Implements the Hamming distance between 2 strings."""
-    assert(len(str1) == len(str2))
-    return sum([1 if x != y else 0 for x, y in zip(str1, str2)])
-
 
 class Solution(object):
 
@@ -139,9 +134,6 @@ class Instance(object):
         val = (-1, 1)
         sol = np.array([choice(val) for i in xrange(TOTAL_NB_QUBITS)])
         old_cost = self.get_cost(sol)
-        # scores = [old_cost, ]
-        # temperatures = [T, ]
-        # hammings = [hamming_distance(sol, self.config), ]
         print 'Current best for ', self.id, ' ', old_cost, ' config: ', self.min_cost
         sol, cost = StandardAnnealer(
             cost=self.get_cost,
