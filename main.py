@@ -5,14 +5,14 @@ import re
 import numpy as np
 import time
 from graph.plot import (
-    plot,
-    multiPlot,
-    plotLines,
-)
+        plot,
+        multiPlot,
+        plotLines,
+        )
 from data import (
-    Instance,
-    Solution,
-)
+        Instance,
+        Solution,
+        )
 from pdb import set_trace as debug
 from multiprocessing.pool import Pool
 import cPickle as pk
@@ -49,11 +49,11 @@ def pool_SA(instance):
     start = time.time()
     while True:
         conf, cost = instance.run_SA(
-            T=10,
-            c=0.927,
-            n_sweeps=1000,
-            T_min=0.0000001
-        )
+                T=10,
+                c=0.927,
+                n_sweeps=1000,
+                T_min=0.01
+                )
         if cost == instance.min_cost:
             break
     end = time.time()
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     # print 'Simulated Annealing: ', sa[1]
     print 'Loading all instances...'
     nb_sg = 420
-    instances = get_all_instances(nb_sg=nb_sg)
+    instances = get_all_instances(nb_sg=nb_sg, id=199)
     p = Pool(processes=1)
     for epoch in xrange(10):
         print 'Solving all instances...'
