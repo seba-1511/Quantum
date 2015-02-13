@@ -15,6 +15,11 @@ from utils import hamming_distance
 
 class StandardAnnealer(object):
 
+    """
+        Implements a simulated annealing procedure
+        to find the lowest energy for this given instance problem
+    """
+
     def __init__(self, cost, update_cost, solution, values=(-1, 1), plot=False):
         self.cost = cost
         self.update_cost = update_cost
@@ -36,34 +41,47 @@ class StandardAnnealer(object):
             plot3D([temperatures, hammings, energies], title='3D_E_T_Ham',
                    xlabel='T', ylabel='Hamming', zlabel='E')
 
+    def update_temperature(self, c, T):
+        return c * T
+
+    def update_solution(self):
+        swap = randint(0, self.solution.shape[0] - 1)
+        new_sol = self.solution.copy()
+        new_sol[swap] = new_sol[swap] * -1
+        new_cost = self.update_cost(
+            new_sol, self.solution, self.cost, swap)
+        return new_sol, new_cost
+
+    def stop_annealing(self, T, T_min):
+        return T <= T_min
+
     def run(self, T=10, T_min=0.01, n_sweeps=1000, c=0.9):
-        old_cost = self.cost(self.solution)
+        self.cost = self.cost(self.solution)
         if self.plot:
-            scores = [old_cost, ]
+            scores = [self.cost, ]
             temperatures = [T, ]
             hammings = [hamming_distance(self.solution, self.config), ]
-        while T > T_min:
+        while not self.stop_annealing(T, T_min):
             accept_prob = T * log(random())
             for sweep in xrange(n_sweeps):
                 for i in xrange(len(self.solution)):
-                    swap = randint(0, self.solution.shape[0] - 1)
-                    new_sol = self.solution.copy()
-                    new_sol[swap] = new_sol[swap] * -1
-                    new_cost = self.update_cost(
-                        new_sol, self.solution, old_cost, swap)
-                    if new_cost < old_cost or (old_cost - new_cost) < accept_prob:
+                    new_sol, new_cost = self.update_solution()
+                    if new_cost < self.cost or (self.cost - new_cost) < accept_prob:
                         self.solution = new_sol
-                        old_cost = new_cost
-                T = c * T
+                        self.cost = new_cost
+                T = self.update_temperature(c, T)
                 if self.plot:
-                    scores.append(old_cost)
+                    scores.append(self.cost)
                     temperatures.append(T)
                     hammings.append(
                         hamming_distance(self.solution, self.config))
-        return (self.solution, old_cost)
+        return (self.solution, self.cost)
 
 
 class LinearAnnealer(StandardAnnealer):
 
-    def run():
+    def __init__(*args, **kwargs):
+        StandardAnnealer.__init__(*args, **kwargs)
+
+    def update_temperature(self):
         pass

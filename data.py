@@ -127,10 +127,6 @@ class Instance(object):
 
     @timeit
     def run_SA(self, T=10, c=0.9, n_sweeps=10, T_min=1):
-        """
-            Implements a simulated annealing procedure
-            to find the lowest energy for this given instance problem
-        """
         val = (-1, 1)
         sol = np.array([choice(val) for i in xrange(TOTAL_NB_QUBITS)])
         old_cost = self.get_cost(sol)
