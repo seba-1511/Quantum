@@ -17,6 +17,7 @@ from graph.plot import (
     plotSurface3D
 )
 from performance import timeit
+from SimAnneal import StandardAnnealer, LinearAnnealer
 
 TOTAL_NB_QUBITS = 512
 INSTANCES_DIR = 'plantedInstances/'
@@ -142,46 +143,16 @@ class Instance(object):
         # temperatures = [T, ]
         # hammings = [hamming_distance(sol, self.config), ]
         print 'Current best for ', self.id, ' ', old_cost, ' config: ', self.min_cost
-        while T > T_min:
-            accept_prob = T * log(random())
-            for sweep in xrange(n_sweeps):
-                for i in xrange(len(sol)):
-                    swap = randint(0, sol.shape[0] - 1)
-                    new_sol = sol.copy()
-                    new_sol[swap] = new_sol[swap] * -1
-                    new_cost = self.get_diff_cost(new_sol, sol, old_cost, swap)
-                    if new_cost < old_cost or (old_cost - new_cost) < accept_prob:
-                        sol = new_sol
-                        old_cost = new_cost
-                T = c * T
-                # scores.append(old_cost)
-                # temperatures.append(T)
-                # hammings.append(hamming_distance(sol, self.config))
-                # Plotting:
-                # plotLines([[temperatures, scores], ],
-                #           title='Sim_Anneal_T_E', xlabel='T',
-                #           ylabel='Energy', xscale='log')
-                # plotLines([[temperatures, hammings], ],
-                #           title='Sim_Anneal_T_Hamming', xlabel='T',
-                #           ylabel='Hamming', xscale='log')
-                # multiPlot([[scores, hammings], ],
-                #           title='Sim_Anneal_E_Hamming', xlabel='Energy',
-                #           ylabel='Hamming')
-                # plot3D([temperatures, hammings, scores], title='3D_E_T_Ham',
-                #        xlabel='T', ylabel='Hamming', zlabel='E')
+        sol, cost = StandardAnnealer(
+            cost=self.get_cost,
+            update_cost=self.get_diff_cost,
+            solution=sol,
+        ).run(T, c, n_sweeps, T_min)
         print 'Found best for ', self.id, ' ', old_cost, ' config: ', self.min_cost
-        return (sol, old_cost)
+        return sol, cost
 
     def linear_SA(self, T=10, T_min=1, ):
-        """
-            Implements a simulated annealing procedure
-            to find the lowest energy for this given instance problem
-        """
-        val = (-1, 1)
-        sol = np.array([choice(val) for i in xrange(TOTAL_NB_QUBITS)])
-        old_cost = self.get_cost(sol)
-        while T > T_min
-
+        pass
 
     def run_GA(self):
         """
