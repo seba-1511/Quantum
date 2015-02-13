@@ -10,12 +10,12 @@ from random import (randint, random, choice)
 from math import log
 from pdb import set_trace as debug
 from graph.plot import (
-        plotLines,
-        multiPlot,
-        plot3D,
-        plotLines3D,
-        plotSurface3D
-        )
+    plotLines,
+    multiPlot,
+    plot3D,
+    plotLines3D,
+    plotSurface3D
+)
 from performance import timeit
 
 TOTAL_NB_QUBITS = 512
@@ -58,10 +58,10 @@ class Instance(object):
         directory = os.path.dirname(os.path.abspath(__file__))
         directory = os.path.join(directory, timing_file)
         filename = 'plantedFrustLoops_Nq%s_Nsg%s_s%s.dat' % (
-                512,
-                self.nb_sg,
-                self.id,
-                )
+            512,
+            self.nb_sg,
+            self.id,
+        )
         f = open(directory, 'r')
         timings = f.readlines()
         for line in timings:
@@ -85,10 +85,10 @@ class Instance(object):
 
     def load_file(self):
         filename = 'plantedFrustLoops_Nq%s_Nsg%s_s%s.dat' % (
-                self.nb_qubits,
-                self.nb_sg,
-                self.id,
-                )
+            self.nb_qubits,
+            self.nb_sg,
+            self.id,
+        )
         self.filename = filename
         directory = os.path.dirname(os.path.abspath(__file__))
         directory = os.path.join(directory, INSTANCES_DIR)
@@ -120,10 +120,10 @@ class Instance(object):
 
     def print_J(self):
         filename = 'printed/plantedFrustLoops_Nq%s_Nsg%s_s%s.png' % (
-                self.nb_qubits,
-                self.nb_sg,
-                self.id,
-                )
+            self.nb_qubits,
+            self.nb_sg,
+            self.id,
+        )
         directory = os.path.dirname(os.path.abspath(__file__))
         directory = os.path.join(directory, filename)
         img = self.J
@@ -171,6 +171,17 @@ class Instance(object):
                 #        xlabel='T', ylabel='Hamming', zlabel='E')
         print 'Found best for ', self.id, ' ', old_cost, ' config: ', self.min_cost
         return (sol, old_cost)
+
+    def linear_SA(self, T=10, T_min=1, ):
+        """
+            Implements a simulated annealing procedure
+            to find the lowest energy for this given instance problem
+        """
+        val = (-1, 1)
+        sol = np.array([choice(val) for i in xrange(TOTAL_NB_QUBITS)])
+        old_cost = self.get_cost(sol)
+        while T > T_min
+
 
     def run_GA(self):
         """
