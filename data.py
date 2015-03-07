@@ -6,7 +6,8 @@ import png
 import numpy as np
 
 from scipy import misc
-from random import (randint, random, choice)
+from numpy.random import RandomState
+from random import (randint, random)
 from math import log
 from pdb import set_trace as debug
 from graph.plot import (
@@ -24,6 +25,7 @@ INSTANCES_DIR = 'plantedInstances/'
 SOLUTIONS_DIR = 'solutionsForInstances/'
 VALUES_START = 4
 
+choice = RandomState(seed=1234).choice
 
 
 class Solution(object):
@@ -126,7 +128,7 @@ class Instance(object):
         misc.imsave(directory, img)
 
     @timeit
-    def run_SA(self, T=10, c=0.9, n_sweeps=10, T_min=1):
+    def run_SA(self, T=10, n_sweeps=10, T_min=1):
         val = (-1, 1)
         sol = np.array([choice(val) for i in xrange(TOTAL_NB_QUBITS)])
         old_cost = self.get_cost(sol)
@@ -135,7 +137,8 @@ class Instance(object):
             cost=self.get_cost,
             update_cost=self.get_diff_cost,
             solution=sol,
-        ).run(T, c, n_sweeps, T_min)
+            plot=False,
+        ).run(T=T, n_sweeps=n_sweeps, T_min=T_min)
         print 'Found best for ', self.id, ' ', old_cost, ' config: ', self.min_cost
         return sol, cost
 
