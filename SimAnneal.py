@@ -1,8 +1,9 @@
 #!/usr/local/bin/python
 # -*- coding: utf-8 -*-
-#
-from math import log, exp
+
+import time
 import numpy as np
+from math import log, exp
 from numpy.random import RandomState
 from graph.plot import (
     plotLines,
@@ -88,6 +89,7 @@ class StandardAnnealer(object):
             hammings = [hamming_distance(self.solution, self.config)]
         swaps = np.arange(0, len(self.solution))
         for T in temperatures:
+            start = time.time()
             accept_probs = self.get_accept_probs(T)
             for sweep in xrange(n_sweeps):
                 self.shuffle(swaps)
@@ -102,6 +104,7 @@ class StandardAnnealer(object):
                     hammings.append(
                         hamming_distance(self.solution, self.config))
             print T, ': ', 'Current best: ', self.cost
+            print 'timing', time.time() - start
         if self.plot:
             self.save_plot(energies, T, hammings)
         return (self.solution, self.cost)
