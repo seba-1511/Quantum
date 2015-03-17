@@ -11,6 +11,7 @@ from graph.plot import (
 )
 from data import (
     Instance,
+    LookupInstance
     Solution,
 )
 from pdb import set_trace as debug

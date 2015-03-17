@@ -152,15 +152,66 @@ class Instance(object):
         """
         pass
 
+
+class LookupInstance(Instance):
+
+    """An instance, stored with a lookup table. Faster than the normal one."""
+
+    def read_matrix(self, file):
+        matrix = [[] for i in xrange(TOTAL_NB_QUBITS)]
+        for i in xrange(self.nb_qubits + VALUES_START + 1, len(file) - 1):
+            row, col, value = file[i].split()
+            matrix[int(row)].append((int(col), int(value)))
+            matrix[int(col)].append((int(row), int(value)))
+        return matrix
+
+    def get_cost(self, sol):
+        H = 0
+        max_len = len(self.J)
+        first_half = self.J[:max_len]
+        for i, row in enumerate(first_half):
+            for j, value in row:
+                H += (value * sol[i] * sol[j]) + (sol[i] * self.h[i])
+        return H / 2
+
+    def get_diff_cost(self, sol, prev_sol, cost, col):
+        add = 0
+        sub = 0
+        for j, value in self.J[col]:
+            add += value * sol[col] * sol[j]
+            sub += value * prev_sol[col] * prev_sol[j]
+        return cost - sub + add
+
+
 if __name__ == '__main__':
-    d = Instance()
-    val = (-1, 1)
-    sol = np.array([choice(val) for i in xrange(d.config.shape[0])])
-    swap = randint(0, sol.shape[0] - 1)
-    new_sol = sol.copy()
-    new_sol[swap] = new_sol[swap] * -1
-    prev_cost = d.get_cost(sol)
-    cost = d.get_cost(new_sol)
-    diff_cost = d.get_diff_cost(new_sol, sol, prev_cost, swap)
-    print diff_cost, cost
-    assert(cost == diff_cost)
+    import time
+    lookup = LookupInstance()
+    instance = Instance()
+    sol = [choice([-1, 1]) for i in xrange(TOTAL_NB_QUBITS)]
+    cost_inst = instance.get_cost(sol)
+    cost_look = lookup.get_cost(sol)
+    for col in xrange(450, 512):
+        print '\nFor col = ', col
+        diff = [i for i in sol]
+        diff[col] *= -1
+
+        # Lookup benchmark
+        diff_look = lookup.get_diff_cost(diff, sol, cost_look, col)
+        start = time.time()
+        for i in xrange(10):
+            lookup.get_cost(sol)
+            # diff_look = lookup.get_diff_cost(diff, sol, cost_look, col)
+        print 'Lookup: ', time.time() - start
+
+        # Instance benchmark
+        diff_inst = instance.get_diff_cost(diff, sol, cost_inst, col)
+        start = time.time()
+        for i in xrange(10):
+            # instance.get_cost(sol)
+            diff_inst = instance.get_diff_cost(diff, sol, cost_inst, col)
+
+        print 'Instance: ', time.time() - start
+        print cost_inst, cost_look
+        print diff_inst, diff_look
+        assert(cost_inst == cost_look)
+        assert(diff_inst == diff_look)
