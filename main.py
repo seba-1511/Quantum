@@ -11,9 +11,10 @@ from graph.plot import (
 )
 from data import (
     Instance,
-    LookupInstance
+    LookupInstance,
     Solution,
 )
+
 from pdb import set_trace as debug
 from multiprocessing.pool import Pool
 import cPickle as pk
@@ -25,7 +26,7 @@ def parse_instance(file):
         it returns an Instance object of this problem.
     """
     nb_qubits, nb_sg, id = map(int, re.findall(r'\d+', file))
-    return Instance(nb_sg=nb_sg, id=id, nb_qubits=nb_qubits)
+    return LookupInstance(nb_sg=nb_sg, id=id, nb_qubits=nb_qubits)
 
 
 def get_all_instances(nb_sg=None, nb_qubits=None, id=None):
@@ -52,8 +53,9 @@ def pool_SA(instance):
         conf, cost = instance.run_SA(
             T=10,
             n_sweeps=1000,
-            T_min=0.01
+            T_min=0.1
         )
+        break
         if cost == instance.min_cost:
             break
     end = time.time()

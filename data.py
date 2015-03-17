@@ -145,13 +145,6 @@ class Instance(object):
     def linear_SA(self, T=10, T_min=1, ):
         pass
 
-    def run_GA(self):
-        """
-            Implements a genetic algorithm
-            to find the lowest energy for this given instance problem.
-        """
-        pass
-
 
 class LookupInstance(Instance):
 
@@ -178,9 +171,9 @@ class LookupInstance(Instance):
         add = 0
         sub = 0
         for j, value in self.J[col]:
-            add += value * sol[col] * sol[j]
-            sub += value * prev_sol[col] * prev_sol[j]
-        return cost - sub + add
+            add += value * sol[j]
+            sub += value * prev_sol[j]
+        return cost - (prev_sol[col] * sub) + (sol[col] * add)
 
 
 if __name__ == '__main__':
@@ -199,8 +192,8 @@ if __name__ == '__main__':
         diff_look = lookup.get_diff_cost(diff, sol, cost_look, col)
         start = time.time()
         for i in xrange(10):
-            lookup.get_cost(sol)
-            # diff_look = lookup.get_diff_cost(diff, sol, cost_look, col)
+            # lookup.get_cost(sol)
+            diff_look = lookup.get_diff_cost(diff, sol, cost_look, col)
         print 'Lookup: ', time.time() - start
 
         # Instance benchmark
