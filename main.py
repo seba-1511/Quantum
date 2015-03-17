@@ -3,6 +3,7 @@
 import os
 import re
 import numpy as np
+import gzip
 import time
 from graph.plot import (
     plot,
@@ -55,7 +56,6 @@ def pool_SA(instance):
             n_sweeps=1000,
             T_min=0.1
         )
-        break
         if cost == instance.min_cost:
             break
     end = time.time()
@@ -75,6 +75,6 @@ if __name__ == '__main__':
         print 'Solving all instances...'
         scores = [pool_SA(i) for i in instances]
         # scores = p.map(pool_SA, instances)
-        f = open('runtimes_nbsg' + str(nb_sg) + '_' + str(epoch) + '.pkl')
-        pk.dump(scores, f, protocol=-1)
-        f.close()
+        # f = 'runtimes_nbsg' + str(nb_sg) + '_' + str(epoch) + '.pkl.gz'
+        # with gzip.open(f, 'wb') as save:
+        #     pk.dump(scores, save, protocol=-1)
