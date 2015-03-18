@@ -18,7 +18,7 @@ import cProfile
 """
     TODO:
     - eliminate dots: use append = mylist.append
-    - use map functions and list comprehensions instead of for loops.
+    - use list comprehensions instead of for loops.
     - Generate the lookup tables for the log/exp and Temperatures
     - Shuffle algo for the qubits. Less random gen, ensures they are all flipped
     - instead of lookup tables for probs, memoize them.
@@ -65,7 +65,7 @@ class StandardAnnealer(object):
         update = self.update_cost
         sol = self.solution
         cost = self.cost
-        new_sol = sol[:]
+        new_sol = list(sol)
         new_sol[swap] *= -1
         new_cost = update(new_sol, sol, cost, swap)
         return new_sol, new_cost

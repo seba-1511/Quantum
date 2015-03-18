@@ -67,14 +67,16 @@ if __name__ == '__main__':
     # print 'Timing: ', data.timing
     # sa = data.run_SA(T=10)
     # print 'Simulated Annealing: ', sa[1]
-    print 'Loading all instances...'
-    nb_sg = 420
-    instances = get_all_instances(nb_sg=nb_sg, id=199)
-    p = Pool(processes=1)
-    for epoch in xrange(10):
-        print 'Solving all instances...'
-        scores = [pool_SA(i) for i in instances]
+    # print 'Loading all instances...'
+    # nb_sg = 420
+    # instances = get_all_instances(nb_sg=nb_sg, id=199)
+    # p = Pool(processes=1)
+    # for epoch in xrange(10):
+    #     print 'Solving all instances...'
+    #     scores = [pool_SA(i) for i in instances]
         # scores = p.map(pool_SA, instances)
         # f = 'runtimes_nbsg' + str(nb_sg) + '_' + str(epoch) + '.pkl.gz'
         # with gzip.open(f, 'wb') as save:
         #     pk.dump(scores, save, protocol=-1)
+    inst = LookupInstance()
+    pool_SA(inst)
