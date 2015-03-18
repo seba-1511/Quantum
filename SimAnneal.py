@@ -61,15 +61,11 @@ class StandardAnnealer(object):
         return T.pop(0) if len(T) > 0 else 0
 
     def update_solution(self, swap):
-        update = self.update_cost
-        sol = self.solution
-        cost = self.cost
-        new_sol = list(sol)
+        new_sol = self.solution[:]
         new_sol[swap] *= -1
-        new_cost = update(new_sol, sol, cost, swap)
+        new_cost = self.update_cost(new_sol, self.solution, self.cost, swap)
         return new_sol, new_cost
 
-    @timeit
     def stop_annealing(self, T, T_min):
         return T <= T_min
 

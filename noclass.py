@@ -9,6 +9,7 @@ from data import (
     LookupInstance,
 )
 
+
 def run():
     print 'Loading all instances...'
     nb_sg = 420
@@ -23,9 +24,9 @@ if __name__ == '__main__':
     b = np.array(a)
     s = time.time()
     for x in xrange(1000):
-        c = [2*i for i in a]
+        c = [2 * i for i in a]
     print 'list: ', (time.time() - s)
     s = time.time()
     for x in xrange(1000):
-        c = [2*i for i in b]
+        c = [2 * i for i in b]
     print 'numpy: ', (time.time() - s)

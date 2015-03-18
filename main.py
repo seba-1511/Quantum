@@ -49,16 +49,15 @@ def get_all_instances(nb_sg=None, nb_qubits=None, id=None):
 
 def pool_SA(instance):
     print 'Started task on instance', instance.filename
-    start = time.time()
     while True:
         conf, cost = instance.run_SA(
             T=10,
             n_sweeps=1000,
-            T_min=0.1
+            T_min=1
         )
+        break
         if cost == instance.min_cost:
             break
-    end = time.time()
     return (instance.filename, (end - start))
 
 if __name__ == '__main__':

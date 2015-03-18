@@ -43,5 +43,5 @@ class Profiler():
         self.prof.disable()
 
     def score(self):
-        ps = pstats.Stats(self.pr).sort_stats('cumulative')
+        ps = pstats.Stats(self.prof).sort_stats('cumulative')
         ps.print_stats()
