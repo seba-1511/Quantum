@@ -4,6 +4,7 @@
 import time
 import numpy as np
 from math import log, exp
+from random import Random
 from numpy.random import RandomState
 from graph.plot import (
     plotLines,
@@ -41,8 +42,8 @@ class StandardAnnealer(object):
         self.solution = solution
         self.values = values
         self.plot = plot
-        self.random = RandomState(seed=RND_SEED).uniform
-        self.shuffle = RandomState(seed=RND_SEED).shuffle
+        self.random = Random(RND_SEED).random
+        self.shuffle = Random(RND_SEED).shuffle
 
     def save_plot(self, energies, temperatures, hammings):
         if self.plot:
@@ -93,7 +94,8 @@ class StandardAnnealer(object):
         if self.plot:
             energies = [self.cost]
             hammings = [hamming_distance(self.solution, self.config)]
-        swaps = np.arange(0, len(self.solution))
+        # swaps = np.arange(0, len(self.solution))
+        swaps = [i for i, val in enumerate(self.solution)]
         for T in temperatures:
             start = time.time()
             accept_probs = self.get_accept_probs(T)

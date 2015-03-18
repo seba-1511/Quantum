@@ -7,7 +7,7 @@ import numpy as np
 
 from scipy import misc
 from numpy.random import RandomState
-from random import (randint, random)
+from random import (randint, random, Random)
 from math import log
 from pdb import set_trace as debug
 from graph.plot import (
@@ -25,7 +25,8 @@ INSTANCES_DIR = 'plantedInstances/'
 SOLUTIONS_DIR = 'solutionsForInstances/'
 VALUES_START = 4
 
-choice = RandomState(seed=1234).choice
+# choice = RandomState(seed=1234).choice
+choice = Random(1234).choice
 
 
 class Solution(object):
@@ -96,7 +97,8 @@ class Instance(object):
         return value
 
     def read_config(self, file):
-        config = np.zeros(TOTAL_NB_QUBITS)
+        # config = np.zeros(TOTAL_NB_QUBITS)
+        config = [0 for _ in xrange(TOTAL_NB_QUBITS)]
         for i in xrange(VALUES_START, self.nb_qubits + VALUES_START):
             place, value = file[i].split()
             config[int(place)] += int(value)
@@ -110,7 +112,8 @@ class Instance(object):
         return matrix
 
     def read_h(self, file):
-        return np.zeros(TOTAL_NB_QUBITS)
+        # return np.zeros(TOTAL_NB_QUBITS)
+        return [0 for _ in xrange(TOTAL_NB_QUBITS)]
 
     def read_cost(self, file):
         values = file[-1].split()
@@ -130,7 +133,8 @@ class Instance(object):
     @timeit
     def run_SA(self, T=10, n_sweeps=10, T_min=1):
         val = (-1, 1)
-        sol = np.array([choice(val) for i in xrange(TOTAL_NB_QUBITS)])
+        # sol = np.array([choice(val) for i in xrange(TOTAL_NB_QUBITS)])
+        sol = [choice(val) for i in xrange(TOTAL_NB_QUBITS)]
         old_cost = self.get_cost(sol)
         print 'Current best for ', self.id, ' ', old_cost, ' config: ', self.min_cost
         sol, cost = StandardAnnealer(
