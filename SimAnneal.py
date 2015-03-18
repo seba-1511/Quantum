@@ -80,7 +80,6 @@ class StandardAnnealer(object):
             T = T * .927
         return temps
 
-    @timeit
     @profile
     def run(self, T=10, T_min=0.04, n_sweeps=1000):
         temperatures = self.generate_temperatures(

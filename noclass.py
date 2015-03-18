@@ -23,18 +23,18 @@ from performance import (
 
 choice = Random(1234).choice
 TOTAL_NB_QUBITS = 512
-DIFF_RANGE = 65
-RND_SEED = 1234
+DIFF_RANGE = 60
+RND_SEED = None
+ANNEALING_SCHEDULE = 0.927
 
 
-@profile
 def run():
     print 'Loading all instances...'
     instance = LookupInstance()
     T = 10
     n_sweeps = 1000
     T_min = 1
-    start = time.time()
+    time_to_solution = time.time()
     while True:
         #: Init variables for annealing
         val = (-1, 1)
@@ -44,7 +44,8 @@ def run():
 
         #: Init Standard Annealer
         cost = instance.get_cost
-        update_cost = instance.get_diff_cost
+        # update_cost = instance.get_diff_cost
+        J = instance.J
         random = Random(RND_SEED).random
         shuffle = Random(RND_SEED).shuffle
 
@@ -54,7 +55,7 @@ def run():
         append = temperatures.append
         while T >= T_min:
             append(T)
-            T = T * .927
+            T = T * ANNEALING_SCHEDULE
         # ****************************************
 
         cost = cost(solution)
@@ -74,7 +75,16 @@ def run():
                     # update_solution ****************************
                     new_sol = solution[:]
                     new_sol[swap] *= -1
-                    new_cost = update_cost(new_sol, solution, cost, swap)
+                    # new_cost = update_cost(new_sol, solution, cost, swap)
+                    # update_cost *********************************************
+                    add = 0
+                    sub = 0
+                    for j, value in J[swap]:
+                        add += value * new_sol[j]
+                        sub += value * solution[j]
+                    new_cost = cost - \
+                        (solution[swap] * sub) + (new_sol[swap] * add)
+                    # ************************************************************
                     # ********************************************
 
                     diff = int(cost - new_cost)
@@ -87,7 +97,7 @@ def run():
         break
         if cost == instance.min_cost:
             break
-    end = time.time() - start
+    end = time.time() - time_to_solution
 
     print 'Time to solution: ', end
 
