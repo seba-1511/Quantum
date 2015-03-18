@@ -143,7 +143,7 @@ class Instance(object):
             solution=sol,
             plot=False,
         ).run(T=T, n_sweeps=n_sweeps, T_min=T_min)
-        print 'Found best for ', self.id, ' ', old_cost, ' config: ', self.min_cost
+        print 'Found best for ', self.id, ' ', cost, ' config: ', self.min_cost
         return sol, cost
 
     def linear_SA(self, T=10, T_min=1, ):
