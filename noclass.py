@@ -4,7 +4,7 @@
 import time
 import numpy as np
 
-from random import Random
+from random import Random, randint
 from math import (
     log,
     exp,
@@ -23,9 +23,11 @@ from performance import (
 
 choice = Random(1234).choice
 TOTAL_NB_QUBITS = 512
-DIFF_RANGE = 60
-RND_SEED = None
+DIFF_RANGE = 65
+RND_SEED = randint(0, 10000)
 ANNEALING_SCHEDULE = 0.927
+
+print 'Random Seed: ', RND_SEED
 
 
 def run():
@@ -64,8 +66,8 @@ def run():
             start = time.time()
 
             # get_accept_probs() *****************
-            accept_probs = [exp(-d / T)
-                            for d in xrange(-DIFF_RANGE, DIFF_RANGE)]
+            accept_probs = [exp(d / T)
+                            for d in xrange(-DIFF_RANGE, 0)]
             # ************************************
 
             for sweep in xrange(n_sweeps):
