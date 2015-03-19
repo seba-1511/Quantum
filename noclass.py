@@ -35,7 +35,8 @@ print 'Random Seed: ', RND_SEED
 def run():
     random = Random(RND_SEED).random
     shuffle = Random(RND_SEED).shuffle
-    instance = LookupInstance(id=299, nb_sg=840)
+    instance = LookupInstance(id=5, nb_sg=504)
+    # instance = LookupInstance(id=5, nb_sg=840)
     T_start = 10
     n_sweeps_start = 4
     T_min = 0.5  # (0.95 - ANNEALING_SCHEDULE) * 3
@@ -97,8 +98,8 @@ def run():
                     if diff >= 0 or random() < accept_probs[diff]:
                         solution = new_sol
                         cost = new_cost
-                if cost == instance.min_cost:
-                    break
+                        if cost == instance.min_cost:
+                            break
             if cost == instance.min_cost:
                 break
             print T, ': ', 'Current best: ', cost, '/', instance.min_cost
