@@ -24,32 +24,35 @@ from performance import (
 choice = Random(1234).choice
 TOTAL_NB_QUBITS = 512
 DIFF_RANGE = 65
-RND_SEED = randint(0, 10000)
+RND_SEED = 7186
+# RND_SEED = randint(0, 10000)
 ANNEALING_SCHEDULE = 0.927
+MAX_SWEEPS = 1500
 
 print 'Random Seed: ', RND_SEED
 
 
 def run():
-    print 'Loading all instances...'
-    instance = LookupInstance()
-    T = 10
-    n_sweeps = 1000
-    T_min = 1
+    random = Random(RND_SEED).random
+    shuffle = Random(RND_SEED).shuffle
+    instance = LookupInstance(id=299, nb_sg=840)
+    T_start = 10
+    n_sweeps_start = 4
+    T_min = 0.5  # (0.95 - ANNEALING_SCHEDULE) * 3
     time_to_solution = time.time()
-    while True:
+    sweeps_decay = 1.5
+    cost = None
+    while cost != instance.min_cost:
         #: Init variables for annealing
+        T = T_start
+        n_sweeps = n_sweeps_start
         val = (-1, 1)
         solution = [choice(val) for i in xrange(TOTAL_NB_QUBITS)]
-        first_cost = instance.get_cost(solution)
-        print 'Current best for ', instance.id, ' ', first_cost, ' config: ', instance.min_cost
 
         #: Init Standard Annealer
         cost = instance.get_cost
         # update_cost = instance.get_diff_cost
         J = instance.J
-        random = Random(RND_SEED).random
-        shuffle = Random(RND_SEED).shuffle
 
         #: Run the annealing process
         # generate_temperatures ******************
@@ -63,8 +66,9 @@ def run():
         cost = cost(solution)
         swaps = [i for i, val in enumerate(solution)]
         for T in temperatures:
-            start = time.time()
-
+            # start = time.time()
+            n_sweeps = int(
+                n_sweeps * sweeps_decay) if n_sweeps < MAX_SWEEPS else MAX_SWEEPS
             # get_accept_probs() *****************
             accept_probs = [exp(d / T)
                             for d in xrange(-DIFF_RANGE, 0)]
@@ -93,10 +97,12 @@ def run():
                     if diff >= 0 or random() < accept_probs[diff]:
                         solution = new_sol
                         cost = new_cost
-            print T, ': ', 'Current best: ', cost
-            print 'timing', time.time() - start
-        print 'Found best for ', instance.id, ' ', cost, ' config: ', instance.min_cost
-        break
+                if cost == instance.min_cost:
+                    break
+            if cost == instance.min_cost:
+                break
+            print T, ': ', 'Current best: ', cost, '/', instance.min_cost
+            # print 'timing', time.time() - start
         if cost == instance.min_cost:
             break
     end = time.time() - time_to_solution
