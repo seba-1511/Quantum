@@ -2,108 +2,81 @@
 # -*- coding: utf-8 -*-
 
 import time
-import numpy as np
-
-from random import Random, randint
+from array import array
+from random import Random
 from math import (
-    log,
     exp,
 )
-
-from SimAnneal import StandardAnnealer
 from data import (
-    Instance,
     LookupInstance,
 )
 from performance import (
     timeit,
-    profile,
+    cprofile,
     Profiler,
 )
 
-choice = Random(1234).choice
 TOTAL_NB_QUBITS = 512
 DIFF_RANGE = 65
 RND_SEED = 7186
-# RND_SEED = randint(0, 10000)
-ANNEALING_SCHEDULE = 0.927
-MAX_SWEEPS = 1500
+N_SWEEPS = 1000
 
 print 'Random Seed: ', RND_SEED
 
 
+# @profile
 def run():
-    random = Random(RND_SEED).random
-    shuffle = Random(RND_SEED).shuffle
-    instance = LookupInstance(id=5, nb_sg=504)
-    # instance = LookupInstance(id=5, nb_sg=840)
-    T_start = 10
-    n_sweeps_start = 4
-    T_min = 0.5  # (0.95 - ANNEALING_SCHEDULE) * 3
     time_to_solution = time.time()
-    sweeps_decay = 1.5
+    # initialization of loop variables:
+    add, sub = 0, 0
+    random = Random(RND_SEED).random
+    randrange = Random(RND_SEED).randrange
+    choice = Random(1234).choice
+    instance = LookupInstance(id=0, nb_sg=420)
+    J = instance.J
+    n_sweeps = N_SWEEPS
     cost = None
-    while cost != instance.min_cost:
-        #: Init variables for annealing
-        T = T_start
-        n_sweeps = n_sweeps_start
-        val = (-1, 1)
-        solution = [choice(val) for i in xrange(TOTAL_NB_QUBITS)]
+    val = (-1, 1)
+    # generate_temperatures ******************
+    temperatures = [2, 1, .5]
+    # ****************************************
 
-        #: Init Standard Annealer
+    # get_accept_probs() *****************
+    accept_probs = tuple(tuple(exp(d / T)
+                               for d in xrange(-DIFF_RANGE, 0)) for T in temperatures)
+    # ************************************
+    print 'Time to config: ', time.time() - time_to_solution
+    # while cost != instance.min_cost:
+    for i in xrange(5):
+        #: Init variables for annealing
+        solution = [choice(val) for i in xrange(TOTAL_NB_QUBITS)]
         cost = instance.get_cost
-        # update_cost = instance.get_diff_cost
-        J = instance.J
 
         #: Run the annealing process
-        # generate_temperatures ******************
-        temperatures = []
-        append = temperatures.append
-        while T >= T_min:
-            append(T)
-            T = T * ANNEALING_SCHEDULE
-        # ****************************************
-
         cost = cost(solution)
-        swaps = [i for i, val in enumerate(solution)]
-        for T in temperatures:
-            # start = time.time()
-            n_sweeps = int(
-                n_sweeps * sweeps_decay) if n_sweeps < MAX_SWEEPS else MAX_SWEEPS
-            # get_accept_probs() *****************
-            accept_probs = [exp(d / T)
-                            for d in xrange(-DIFF_RANGE, 0)]
-            # ************************************
-
+        for T_i, T in enumerate(temperatures):
+            start = time.time()
             for sweep in xrange(n_sweeps):
-                shuffle(swaps)
+                swaps = [randrange(0, TOTAL_NB_QUBITS)
+                         for i in xrange(TOTAL_NB_QUBITS)]
                 for swap in swaps:
-
                     # update_solution ****************************
-                    new_sol = solution[:]
-                    new_sol[swap] *= -1
-                    # new_cost = update_cost(new_sol, solution, cost, swap)
-                    # update_cost *********************************************
-                    add = 0
-                    sub = 0
-                    for j, value in J[swap]:
-                        add += value * new_sol[j]
-                        sub += value * solution[j]
-                    new_cost = cost - \
-                        (solution[swap] * sub) + (new_sol[swap] * add)
-                    # ************************************************************
+                    # sub = sum([value * solution[j] for j, value in J[swap]])
+                    # sub *= solution[swap]
+                    solution[swap] *= -1
+                    add = sum([value * solution[j] for j, value in J[swap]])
+                    add *= solution[swap]
                     # ********************************************
-
-                    diff = int(cost - new_cost)
-                    if diff >= 0 or random() < accept_probs[diff]:
-                        solution = new_sol
-                        cost = new_cost
+                    diff = 2 * add
+                    if diff >= 0 or random() < accept_probs[T_i][diff]:
+                        cost -= diff
                         if cost == instance.min_cost:
                             break
-            if cost == instance.min_cost:
-                break
+                            break
+                    else:
+                        solution[swap] *= -1
             print T, ': ', 'Current best: ', cost, '/', instance.min_cost
-            # print 'timing', time.time() - start
+            print 'timing', time.time() - start
         if cost == instance.min_cost:
             break
     end = time.time() - time_to_solution
@@ -112,3 +85,8 @@ def run():
 
 if __name__ == '__main__':
     run()
+# To improve:
+# - To find diff: if sol[i] == sol[j] -> add J[i, j] else substract.
+# - Manually calculate the exp probs
+# - change so that diff = new - old
+# - Replace sum with for loop, to see what happens

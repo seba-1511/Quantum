@@ -19,7 +19,7 @@ def timeit(fn):
     return measure_time
 
 
-def profile(fn):
+def cprofile(fn):
     @wraps(fn)
     def measure_perf(*args, **kwargs):
         prof = Profiler()

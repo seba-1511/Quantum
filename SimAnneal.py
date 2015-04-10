@@ -12,7 +12,7 @@ from graph.plot import (
     plot3D,
 )
 from utils import hamming_distance
-from performance import timeit, profile, Profiler
+from performance import timeit, cprofile, Profiler
 
 """
     TODO:
@@ -80,7 +80,7 @@ class StandardAnnealer(object):
             T = T * .927
         return temps
 
-    @profile
+    @cprofile
     def run(self, T=10, T_min=0.04, n_sweeps=1000):
         temperatures = self.generate_temperatures(
             T, T_min) if isinstance(T, int) else T
