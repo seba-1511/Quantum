@@ -32,7 +32,7 @@ def run(problem_id, given_temps):
     random = Random(RND_SEED).random
     randrange = Random(RND_SEED).randrange
     choice = Random(1234).choice
-    instance = LookupInstance(id=problem_id, nb_sg=420)
+    instance = LookupInstance(id=problem_id, nb_sg=504)
     # instance = LookupInstance(id=0, nb_sg=420)
     J = instance.J
     n_sweeps = N_SWEEPS
@@ -107,7 +107,8 @@ def drandge(start, stop, step):
     r = start
     while r < stop:
         res.append(r)
-        r += step + (random() - .5)
+        rnd = (random() - .5)
+        r += (step + rnd) if step + rnd >= 0 else step
     return res
 
 
@@ -130,12 +131,12 @@ if __name__ == '__main__':
         # [4, 3, 2, 1.5, 1, .5],  # Entry:  6 , average:  19.2818744421
         # [5, 4, 3, 2, 1.5, 1, .5],  # Entry:  7 , average:  21.3565538883
         # [3.2, 2.7, 2, 1.5, 1, .5],  # Entry:  8 , average:  16.5079873323
-        drandge(.5, 1.5, .1)[::-1],  # Entry:  9 , average:  83.3435684204
-        drandge(.5, 1.5, .2)[::-1],  # Entry:  10 , average:  44.958420825
-        drandge(.5, 1.5, .25)[::-1],  # Entry:  11 , average:  34.9596844912
-        drandge(.5, 1.5, .33)[::-1],  # Entry:  12 , average:  20.4650949955
-        drandge(.5, 1.5, .4)[::-1],  # Entry:  13 , average:  17.7199317932
-        drandge(.5, 1.5, .5)[::-1],  # Entry:  14 , average:  14.2617946863
+        drandge(.5, 2.5, .1)[::-1],  # Entry:  9 , average:  83.3435684204
+        drandge(.5, 2.5, .2)[::-1],  # Entry:  10 , average:  44.958420825
+        drandge(.5, 2.5, .25)[::-1],  # Entry:  11 , average:  34.9596844912
+        drandge(.5, 2.5, .33)[::-1],  # Entry:  12 , average:  20.4650949955
+        drandge(.5, 2.5, .4)[::-1],  # Entry:  13 , average:  17.7199317932
+        drandge(.5, 2.5, .5)[::-1],  # Entry:  14 , average:  14.2617946863
         # drange(.5, 4, .1)[::-1],  # Entry:  15 , average:  153.844642377
         # drange(.5, 4, .2)[::-1],  # Entry:  16 , average:  65.9701389074
         # drange(.5, 4, .25)[::-1],  # Entry:  17 , average:  57.3783693552
