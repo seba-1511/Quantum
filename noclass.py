@@ -111,25 +111,57 @@ def explore(temp):
 if __name__ == '__main__':
     temps = [
         [2, 1, .5],
-        [2, 1, .75, .5],
-        [3, 2, 1, .5],
-        [3, 2.5, 2, 1, .5],
-        [2, 1.5, 1, .5],
-        [3, 2, 1.5, 1, .5],
-        [4, 3, 2, 1.5, 1, .5],
-        [5, 4, 3, 2, 1.5, 1, .5],
-        [3.2, 2.7, 2, 1.5, 1, .5],
-        drange(.5, 3, .1)[::-1],
-        drange(.5, 3, .2)[::-1],
-        drange(.5, 3, .25)[::-1],
-        drange(.5, 3, .33)[::-1],
-        drange(.5, 3, .4)[::-1],
-        drange(.5, 3, .5)[::-1],
+        # [2, 1, .75, .5],
+        # [3, 2, 1, .5],
+        # [3, 2.5, 2, 1, .5],
+        # [2, 1.5, 1, .5],
+        # [3, 2, 1.5, 1, .5],
+        # [4, 3, 2, 1.5, 1, .5],
+        # [5, 4, 3, 2, 1.5, 1, .5],
+        # [3.2, 2.7, 2, 1.5, 1, .5],
+        # drange(.5, 3, .1)[::-1],
+        # drange(.5, 3, .2)[::-1],
+        # drange(.5, 3, .25)[::-1],
+        # drange(.5, 3, .33)[::-1],
+        # drange(.5, 3, .4)[::-1],
+        # drange(.5, 3, .5)[::-1],
+
+        # drange(.5, 4, .1)[::-1],
+        # drange(.5, 4, .2)[::-1],
+        # drange(.5, 4, .25)[::-1],
+        # drange(.5, 4, .33)[::-1],
+        # drange(.5, 4, .4)[::-1],
+        # drange(.5, 4, .5)[::-1],
+
+        # drange(.5, 5, .1)[::-1],
+        # drange(.5, 5, .2)[::-1],
+        # drange(.5, 5, .25)[::-1],
+        # drange(.5, 5, .33)[::-1],
+        # drange(.5, 5, .4)[::-1],
+        # drange(.5, 5, .5)[::-1],
+
+        # drange(.5, 6, .1)[::-1],
+        # drange(.5, 6, .2)[::-1],
+        # drange(.5, 6, .25)[::-1],
+        # drange(.5, 6, .33)[::-1],
+        # drange(.5, 6, .4)[::-1],
+        # drange(.5, 6, .5)[::-1],
+
+        # drange(.5, 7, .1)[::-1],
+        # drange(.5, 7, .2)[::-1],
+        # drange(.5, 7, .25)[::-1],
+        # drange(.5, 7, .33)[::-1],
+        # drange(.5, 7, .4)[::-1],
+        # drange(.5, 7, .5)[::-1],
     ]
     pool = Pool(processes=7)
     results = pool.map(explore, temps)
+    mini = 3600
+    posi = -1
     for i, r in enumerate(results):
         print 'Entry: ', i, ', average: ', r
+        mini, posi = (r, i) if r < mini else (mini, posi)
+    print 'The best temperatures are: ', temps[posi]
 
 # To improve:
 # - To find diff: if sol[i] == sol[j] -> add J[i, j] else substract.
