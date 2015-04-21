@@ -70,13 +70,16 @@ def run():
                     diff = 2 * add
                     if diff >= 0 or random() < accept_probs[T_i][diff]:
                         cost -= diff
-                        if cost == instance.min_cost:
-                            break
+                        if cost <= instance.min_cost:
                             break
                     else:
                         solution[swap] *= -1
+                if cost <= instance.min_cost:
+                    break
             print T, ': ', 'Current best: ', cost, '/', instance.min_cost
             print 'timing', time.time() - start
+            if cost <= instance.min_cost:
+                break
         if cost == instance.min_cost:
             break
     end = time.time() - time_to_solution
@@ -85,8 +88,10 @@ def run():
 
 if __name__ == '__main__':
     run()
+
 # To improve:
 # - To find diff: if sol[i] == sol[j] -> add J[i, j] else substract.
 # - Manually calculate the exp probs
 # - change so that diff = new - old
 # - Replace sum with for loop, to see what happens
+# - Find best configurations and temperatures
