@@ -32,7 +32,7 @@ def run(problem_id, given_temps):
     random = Random(RND_SEED).random
     randrange = Random(RND_SEED).randrange
     choice = Random(1234).choice
-    instance = LookupInstance(id=problem_id, nb_sg=504)
+    instance = LookupInstance(id=problem_id, nb_sg=420)
     # instance = LookupInstance(id=0, nb_sg=420)
     J = instance.J
     n_sweeps = N_SWEEPS
@@ -122,45 +122,45 @@ def explore(temp):
 if __name__ == '__main__':
     temps = [
         # The best temperatures are:  [2, 1.5, 1, 0.5]
-        # [2, 1, .5],  # Entry:  0 , average:  11.5023886442
-        # [2, 1, .75, .5],  # Entry:  1 , average:  11.7508713245
-        # [3, 2, 1, .5],  # Entry:  2 , average:  12.3210867167
-        # [3, 2.5, 2, 1, .5],  # Entry:  3 , average:  17.2061064005
-        # [2, 1.5, 1, .5],  # Entry:  4 , average:  11.0133153439
-        # [3, 2, 1.5, 1, .5],  # Entry:  5 , average:  14.8749244213
-        # [4, 3, 2, 1.5, 1, .5],  # Entry:  6 , average:  19.2818744421
-        # [5, 4, 3, 2, 1.5, 1, .5],  # Entry:  7 , average:  21.3565538883
-        # [3.2, 2.7, 2, 1.5, 1, .5],  # Entry:  8 , average:  16.5079873323
-        drandge(.5, 2.5, .1)[::-1],  # Entry:  9 , average:  83.3435684204
-        drandge(.5, 2.5, .2)[::-1],  # Entry:  10 , average:  44.958420825
-        drandge(.5, 2.5, .25)[::-1],  # Entry:  11 , average:  34.9596844912
-        drandge(.5, 2.5, .33)[::-1],  # Entry:  12 , average:  20.4650949955
-        drandge(.5, 2.5, .4)[::-1],  # Entry:  13 , average:  17.7199317932
-        drandge(.5, 2.5, .5)[::-1],  # Entry:  14 , average:  14.2617946863
-        # drange(.5, 4, .1)[::-1],  # Entry:  15 , average:  153.844642377
-        # drange(.5, 4, .2)[::-1],  # Entry:  16 , average:  65.9701389074
-        # drange(.5, 4, .25)[::-1],  # Entry:  17 , average:  57.3783693552
-        # drange(.5, 4, .33)[::-1],  # Entry:  18 , average:  34.0786446571
-        # drange(.5, 4, .4)[::-1],  # Entry:  19 , average:  27.4933497429
-        # drange(.5, 4, .5)[::-1],  # Entry:  20 , average:  20.2911326885
-        # drange(.5, 5, .1)[::-1],  # Entry:  21 , average:  171.301710367
-        # drange(.5, 5, .2)[::-1],  # Entry:  22 , average:  93.4000267744
-        # drange(.5, 5, .25)[::-1],  # Entry:  23 , average:  55.5838775635
-        # drange(.5, 5, .33)[::-1],  # Entry:  24 , average:  62.7699363232
-        # drange(.5, 5, .4)[::-1],  # Entry:  25 , average:  40.5261266232
-        # drange(.5, 5, .5)[::-1],  # Entry:  26 , average:  27.9606710911
-        # drange(.5, 6, .1)[::-1],  # Entry:  27 , average:  179.166746593
-        # drange(.5, 6, .2)[::-1],  # Entry:  28 , average:  88.2005657196
-        # drange(.5, 6, .25)[::-1],  # Entry:  29 , average:  89.3465974808
-        # drange(.5, 6, .33)[::-1],  # Entry:  30 , average:  58.3274750471
-        # drange(.5, 6, .4)[::-1],  # Entry:  31 , average:  52.3981850624
-        # drange(.5, 6, .5)[::-1],  # Entry:  32 , average:  46.5125962734
-        # drange(.5, 7, .1)[::-1],  # Entry:  33 , average:  195.822213292
-        # drange(.5, 7, .2)[::-1],  # Entry:  34 , average:  99.3887918711
-        # drange(.5, 7, .25)[::-1],  # Entry:  35 , average:  64.0317424059
-        # drange(.5, 7, .33)[::-1],  # Entry:  36 , average:  69.1890354395
-        # drange(.5, 7, .4)[::-1],  # Entry:  37 , average:  41.7157850981
-        # drange(.5, 7, .5)[::-1],  # Entry:  38 , average:  40.6816365719
+        [2, 1, .5],
+        [2, 1, .75, .5],
+        [3, 2, 1, .5],
+        [3, 2.5, 2, 1, .5],
+        [2, 1.5, 1, .5],
+        [3, 2, 1.5, 1, .5],
+        [4, 3, 2, 1.5, 1, .5],
+        [5, 4, 3, 2, 1.5, 1, .5],
+        [3.2, 2.7, 2, 1.5, 1, .5],
+        drandge(.5, 1, .1)[::-1],
+        drandge(.5, 1, .2)[::-1],
+        drandge(.5, 1, .25)[::-1],
+        drandge(.5, 1, .33)[::-1],
+        drandge(.5, 1, .4)[::-1],
+        drandge(.5, 1, .5)[::-1],
+        drandge(.5, 4, .1)[::-1],
+        drandge(.5, 4, .2)[::-1],
+        drandge(.5, 4, .25)[::-1],
+        drandge(.5, 4, .33)[::-1],
+        drandge(.5, 4, .4)[::-1],
+        drandge(.5, 4, .5)[::-1],
+        drandge(.5, 5, .1)[::-1],
+        drandge(.5, 5, .2)[::-1],
+        drandge(.5, 5, .25)[::-1],
+        drandge(.5, 5, .33)[::-1],
+        drandge(.5, 5, .4)[::-1],
+        drandge(.5, 5, .5)[::-1],
+        drandge(.5, 6, .1)[::-1],
+        drandge(.5, 6, .2)[::-1],
+        drandge(.5, 6, .25)[::-1],
+        drandge(.5, 6, .33)[::-1],
+        drandge(.5, 6, .4)[::-1],
+        drandge(.5, 6, .5)[::-1],
+        drandge(.5, 7, .1)[::-1],
+        drandge(.5, 7, .2)[::-1],
+        drandge(.5, 7, .25)[::-1],
+        drandge(.5, 7, .33)[::-1],
+        drandge(.5, 7, .4)[::-1],
+        drandge(.5, 7, .5)[::-1],
     ]
     pool = Pool(processes=3)
     results = pool.map(explore, temps)
@@ -168,7 +168,7 @@ if __name__ == '__main__':
     posi = -1
     print '-' * 40
     for i, r in enumerate(results):
-        print 'Entry: ', temps[i], ', average: ', r
+        print '\tEntry: ', temps[i], ', average: ', r
         mini, posi = (r, i) if r < mini else (mini, posi)
         print ' '
     print '-' * 40
