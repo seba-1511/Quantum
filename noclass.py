@@ -148,24 +148,24 @@ if __name__ == '__main__':
         drandge(.5, 2, .33)[::-1],  # Entry:  18 , average:  34.0786446571
         drandge(.5, 2, .4)[::-1],  # Entry:  19 , average:  27.4933497429
         drandge(.5, 2, .5)[::-1],  # Entry:  20 , average:  20.2911326885
-        drandge(.5, 2.5, .1)[::-1],  # Entry:  21 , average:  171.301710367
-        drandge(.5, 2.5, .2)[::-1],  # Entry:  22 , average:  93.4000267744
-        drandge(.5, 2.5, .25)[::-1],  # Entry:  23 , average:  55.5838775635
-        drandge(.5, 2.5, .33)[::-1],  # Entry:  24 , average:  62.7699363232
-        drandge(.5, 2.5, .4)[::-1],  # Entry:  25 , average:  40.5261266232
-        drandge(.5, 2.5, .5)[::-1],  # Entry:  26 , average:  27.9606710911
-        drandge(.5, 3, .1)[::-1],  # Entry:  27 , average:  179.166746593
-        drandge(.5, 3, .2)[::-1],  # Entry:  28 , average:  88.2005657196
-        drandge(.5, 3, .25)[::-1],  # Entry:  29 , average:  89.3465974808
-        drandge(.5, 3, .33)[::-1],  # Entry:  30 , average:  58.3274750471
-        drandge(.5, 3, .4)[::-1],  # Entry:  31 , average:  52.3981850624
-        drandge(.5, 3, .5)[::-1],  # Entry:  32 , average:  46.5125962734
-        drandge(.5, 3.5, .1)[::-1],  # Entry:  33 , average:  195.822213292
-        drandge(.5, 3.5, .2)[::-1],  # Entry:  34 , average:  99.3887918711
-        drandge(.5, 3.5, .25)[::-1],  # Entry:  35 , average:  64.0317424059
-        drandge(.5, 3.5, .33)[::-1],  # Entry:  36 , average:  69.1890354395
-        drandge(.5, 3.5, .4)[::-1],  # Entry:  37 , average:  41.7157850981
-        drandge(.5, 3.5, .5)[::-1],  # Entry:  38 , average:  40.6816365719
+        #drandge(.5, 2.5, .1)[::-1],  # Entry:  21 , average:  171.301710367
+        #drandge(.5, 2.5, .2)[::-1],  # Entry:  22 , average:  93.4000267744
+        #drandge(.5, 2.5, .25)[::-1],  # Entry:  23 , average:  55.5838775635
+        #drandge(.5, 2.5, .33)[::-1],  # Entry:  24 , average:  62.7699363232
+        #drandge(.5, 2.5, .4)[::-1],  # Entry:  25 , average:  40.5261266232
+        #drandge(.5, 2.5, .5)[::-1],  # Entry:  26 , average:  27.9606710911
+        #drandge(.5, 3, .1)[::-1],  # Entry:  27 , average:  179.166746593
+        #drandge(.5, 3, .2)[::-1],  # Entry:  28 , average:  88.2005657196
+        #drandge(.5, 3, .25)[::-1],  # Entry:  29 , average:  89.3465974808
+        #drandge(.5, 3, .33)[::-1],  # Entry:  30 , average:  58.3274750471
+        #drandge(.5, 3, .4)[::-1],  # Entry:  31 , average:  52.3981850624
+        #drandge(.5, 3, .5)[::-1],  # Entry:  32 , average:  46.5125962734
+        #drandge(.5, 3.5, .1)[::-1],  # Entry:  33 , average:  195.822213292
+        #drandge(.5, 3.5, .2)[::-1],  # Entry:  34 , average:  99.3887918711
+        #drandge(.5, 3.5, .25)[::-1],  # Entry:  35 , average:  64.0317424059
+        #drandge(.5, 3.5, .33)[::-1],  # Entry:  36 , average:  69.1890354395
+        #drandge(.5, 3.5, .4)[::-1],  # Entry:  37 , average:  41.7157850981
+        #drandge(.5, 3.5, .5)[::-1],  # Entry:  38 , average:  40.6816365719
     ]
     pool = Pool(processes=7)
     results = pool.map(explore, temps)
