@@ -20,6 +20,7 @@ TOTAL_NB_QUBITS = 512
 DIFF_RANGE = 65
 RND_SEED = 7186
 N_SWEEPS = 1000
+NB_EXECUTION_SOLVING = 5
 
 print 'Random Seed: ', RND_SEED
 
@@ -49,7 +50,7 @@ def run(problem_id, given_temps, given_sweeps):
     # ************************************
     # print 'Time to config: ', time.time() - time_to_solution
     # while cost != instance.min_cost:
-    for i in xrange(5):
+    for i in xrange(NB_EXECUTION_SOLVING):
         #: Init variables for annealing
         solution = [choice(possible_values) for i in xrange(TOTAL_NB_QUBITS)]
         cost = instance.get_cost
@@ -113,13 +114,13 @@ def drandge(start, stop, step):
 
 
 def explore(temp):
-    ids = xrange(0, 500)
-    sweeps = xrange(100, 3000, 100)
-    best = 10000 # time reference
-    opt = [] # best sweep
+    ids = [1, 2, 3]  # xrange(0, 500)
+    sweeps = xrange(100, 3000, 1000)
+    best = 10000  # time reference
+    opt = []  # best sweep
     for sweep in sweeps:
         times = [run(i, temp, sweep) for i in ids]
-        avg = sum(times) / len(times)
+        avg = sum(times) / NB_EXECUTION_SOLVING * len(times)
         best, opt = avg, sweep if avg <= best else best, opt
     return best, opt
 
@@ -128,46 +129,46 @@ if __name__ == '__main__':
     temps = [
         # The best temperatures are:  [2, 1.5, 1, 0.5]
         [2, 1, .5],  # Entry:  0 , average:  11.5023886442
-        [2, 1, .75, .5],  # Entry:  1 , average:  11.7508713245
-        [3, 2, 1, .5],  # Entry:  2 , average:  12.3210867167
-        [3, 2.5, 2, 1, .5],  # Entry:  3 , average:  17.2061064005
-        [2, 1.5, 1, .5],  # Entry:  4 , average:  11.0133153439
-        [3, 2, 1.5, 1, .5],  # Entry:  5 , average:  14.8749244213
-        [4, 3, 2, 1.5, 1, .5],  # Entry:  6 , average:  19.2818744421
-        [5, 4, 3, 2, 1.5, 1, .5],  # Entry:  7 , average:  21.3565538883
-        [3.2, 2.7, 2, 1.5, 1, .5],  # Entry:  8 , average:  16.5079873323
-        drandge(.5, 1.5, .1)[::-1],  # Entry:  9 , average:  83.3435684204
-        drandge(.5, 1.5, .2)[::-1],  # Entry:  10 , average:  44.958420825
-        drandge(.5, 1.5, .25)[::-1],  # Entry:  11 , average:  34.9596844912
-        drandge(.5, 1.5, .33)[::-1],  # Entry:  12 , average:  20.4650949955
-        drandge(.5, 1.5, .4)[::-1],  # Entry:  13 , average:  17.7199317932
-        drandge(.5, 1.5, .5)[::-1],  # Entry:  14 , average:  14.2617946863
-        drandge(.5, 2, .1)[::-1],  # Entry:  15 , average:  153.844642377
-        drandge(.5, 2, .2)[::-1],  # Entry:  16 , average:  65.9701389074
-        drandge(.5, 2, .25)[::-1],  # Entry:  17 , average:  57.3783693552
-        drandge(.5, 2, .33)[::-1],  # Entry:  18 , average:  34.0786446571
-        drandge(.5, 2, .4)[::-1],  # Entry:  19 , average:  27.4933497429
-        drandge(.5, 2, .5)[::-1],  # Entry:  20 , average:  20.2911326885
-        #drandge(.5, 2.5, .1)[::-1],  # Entry:  21 , average:  171.301710367
-        #drandge(.5, 2.5, .2)[::-1],  # Entry:  22 , average:  93.4000267744
-        #drandge(.5, 2.5, .25)[::-1],  # Entry:  23 , average:  55.5838775635
-        #drandge(.5, 2.5, .33)[::-1],  # Entry:  24 , average:  62.7699363232
-        #drandge(.5, 2.5, .4)[::-1],  # Entry:  25 , average:  40.5261266232
-        #drandge(.5, 2.5, .5)[::-1],  # Entry:  26 , average:  27.9606710911
-        #drandge(.5, 3, .1)[::-1],  # Entry:  27 , average:  179.166746593
-        #drandge(.5, 3, .2)[::-1],  # Entry:  28 , average:  88.2005657196
-        #drandge(.5, 3, .25)[::-1],  # Entry:  29 , average:  89.3465974808
-        #drandge(.5, 3, .33)[::-1],  # Entry:  30 , average:  58.3274750471
-        #drandge(.5, 3, .4)[::-1],  # Entry:  31 , average:  52.3981850624
-        #drandge(.5, 3, .5)[::-1],  # Entry:  32 , average:  46.5125962734
-        #drandge(.5, 3.5, .1)[::-1],  # Entry:  33 , average:  195.822213292
-        #drandge(.5, 3.5, .2)[::-1],  # Entry:  34 , average:  99.3887918711
-        #drandge(.5, 3.5, .25)[::-1],  # Entry:  35 , average:  64.0317424059
-        #drandge(.5, 3.5, .33)[::-1],  # Entry:  36 , average:  69.1890354395
-        #drandge(.5, 3.5, .4)[::-1],  # Entry:  37 , average:  41.7157850981
-        #drandge(.5, 3.5, .5)[::-1],  # Entry:  38 , average:  40.6816365719
+        # [2, 1, .75, .5],  # Entry:  1 , average:  11.7508713245
+        # [3, 2, 1, .5],  # Entry:  2 , average:  12.3210867167
+        # [3, 2.5, 2, 1, .5],  # Entry:  3 , average:  17.2061064005
+        # [2, 1.5, 1, .5],  # Entry:  4 , average:  11.0133153439
+        # [3, 2, 1.5, 1, .5],  # Entry:  5 , average:  14.8749244213
+        # [4, 3, 2, 1.5, 1, .5],  # Entry:  6 , average:  19.2818744421
+        # [5, 4, 3, 2, 1.5, 1, .5],  # Entry:  7 , average:  21.3565538883
+        # [3.2, 2.7, 2, 1.5, 1, .5],  # Entry:  8 , average:  16.5079873323
+        # drandge(.5, 1.5, .1)[::-1],  # Entry:  9 , average:  83.3435684204
+        # drandge(.5, 1.5, .2)[::-1],  # Entry:  10 , average:  44.958420825
+        # drandge(.5, 1.5, .25)[::-1],  # Entry:  11 , average:  34.9596844912
+        # drandge(.5, 1.5, .33)[::-1],  # Entry:  12 , average:  20.4650949955
+        # drandge(.5, 1.5, .4)[::-1],  # Entry:  13 , average:  17.7199317932
+        # drandge(.5, 1.5, .5)[::-1],  # Entry:  14 , average:  14.2617946863
+        # drandge(.5, 2, .1)[::-1],  # Entry:  15 , average:  153.844642377
+        # drandge(.5, 2, .2)[::-1],  # Entry:  16 , average:  65.9701389074
+        # drandge(.5, 2, .25)[::-1],  # Entry:  17 , average:  57.3783693552
+        # drandge(.5, 2, .33)[::-1],  # Entry:  18 , average:  34.0786446571
+        # drandge(.5, 2, .4)[::-1],  # Entry:  19 , average:  27.4933497429
+        # drandge(.5, 2, .5)[::-1],  # Entry:  20 , average:  20.2911326885
+        # drandge(.5, 2.5, .1)[::-1],  # Entry:  21 , average:  171.301710367
+        # drandge(.5, 2.5, .2)[::-1],  # Entry:  22 , average:  93.4000267744
+        # drandge(.5, 2.5, .25)[::-1],  # Entry:  23 , average:  55.5838775635
+        # drandge(.5, 2.5, .33)[::-1],  # Entry:  24 , average:  62.7699363232
+        # drandge(.5, 2.5, .4)[::-1],  # Entry:  25 , average:  40.5261266232
+        # drandge(.5, 2.5, .5)[::-1],  # Entry:  26 , average:  27.9606710911
+        # drandge(.5, 3, .1)[::-1],  # Entry:  27 , average:  179.166746593
+        # drandge(.5, 3, .2)[::-1],  # Entry:  28 , average:  88.2005657196
+        # drandge(.5, 3, .25)[::-1],  # Entry:  29 , average:  89.3465974808
+        # drandge(.5, 3, .33)[::-1],  # Entry:  30 , average:  58.3274750471
+        # drandge(.5, 3, .4)[::-1],  # Entry:  31 , average:  52.3981850624
+        # drandge(.5, 3, .5)[::-1],  # Entry:  32 , average:  46.5125962734
+        # drandge(.5, 3.5, .1)[::-1],  # Entry:  33 , average:  195.822213292
+        # drandge(.5, 3.5, .2)[::-1],  # Entry:  34 , average:  99.3887918711
+        # drandge(.5, 3.5, .25)[::-1],  # Entry:  35 , average:  64.0317424059
+        # drandge(.5, 3.5, .33)[::-1],  # Entry:  36 , average:  69.1890354395
+        # drandge(.5, 3.5, .4)[::-1],  # Entry:  37 , average:  41.7157850981
+        # drandge(.5, 3.5, .5)[::-1],  # Entry:  38 , average:  40.6816365719
     ]
-    pool = Pool(processes=7)
+    pool = Pool(processes=1)
     results = pool.map(explore, temps)
     mini = 3600
     posi = -1
