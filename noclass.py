@@ -32,7 +32,7 @@ def run(problem_id, given_temps, given_sweeps):
     add, sub = 0, 0
     random = Random(RND_SEED).random
     randrange = Random(RND_SEED).randrange
-    choice = Random(1234).choice
+    choice = Random(RND_SEED).choice
     instance = LookupInstance(id=problem_id, nb_sg=420)
     # instance = LookupInstance(id=0, nb_sg=420)
     J = instance.J
