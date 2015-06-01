@@ -28,7 +28,7 @@ print 'Random Seed: ', RND_SEED
 
 def int_from_qubits(qubits=[-1, 1, 1, -1]):
     qubits = qubits[::-1]
-    sol = sum([pow(2, i) if q == 1 else 0 for i, q in enumerate(qubits)])
+    sol = sum([2**i if q == 1 else 0 for i, q in enumerate(qubits)])
     return sol
 
 
@@ -36,8 +36,6 @@ def load_instance(nqubits=504, nsg=420, id=1):
     return [1, 2, 3, 4, 5]
 
 # @profile
-
-
 def run(problem_id, given_temps, given_sweeps):
     time_to_solution = time.time()
     # initialization of loop variables:
