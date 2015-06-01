@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import time
-from array import array
+from math import pow
 from random import Random
 from math import (
     exp,
 )
 from data import (
     LookupInstance,
+    TableInstance,
 )
 from performance import (
     timeit,
@@ -25,20 +26,30 @@ NB_EXECUTION_SOLVING = 3
 print 'Random Seed: ', RND_SEED
 
 
+def int_from_qubits(qubits=[-1, 1, 1, -1]):
+    qubits = qubits[::-1]
+    sol = sum([pow(2, i) if q == 1 else 0 for i, q in enumerate(qubits)])
+    return sol
+
+
+def load_instance(nqubits=504, nsg=420, id=1):
+    return [1, 2, 3, 4, 5]
+
 # @profile
+
+
 def run(problem_id, given_temps, given_sweeps):
     time_to_solution = time.time()
     # initialization of loop variables:
-    add, sub = 0, 0
     random = Random(RND_SEED).random
     randrange = Random(RND_SEED).randrange
     choice = Random(RND_SEED).choice
-    instance = LookupInstance(id=problem_id, nb_sg=420)
+    instance = TableInstance(id=problem_id, nb_sg=420)
     # instance = LookupInstance(id=0, nb_sg=420)
-    J = instance.J
     n_sweeps = given_sweeps
     cost = None
     possible_values = (-1, 1)
+    energies = instance.eneriges
     # generate_temperatures ******************
     # temperatures = [2, 1, .5]
     temperatures = given_temps
@@ -64,13 +75,12 @@ def run(problem_id, given_temps, given_sweeps):
                          for i in xrange(TOTAL_NB_QUBITS)]
                 for swap in swaps:
                     # update_solution ****************************
-                    # sub = sum([value * solution[j] for j, value in J[swap]])
-                    # sub *= solution[swap]
+                    #: TODO: This can be improved (no assignment at every loop)
+                    E_old = energies[int_from_qubits(solution)]
                     solution[swap] *= -1
-                    add = sum([value * solution[j] for j, value in J[swap]])
-                    add *= solution[swap]
+                    E_new = energies[int_from_qubits(solution)]
                     # ********************************************
-                    diff = 2 * add
+                    diff = E_new - E_old
                     if diff >= 0 or random() < accept_probs[T_i][diff]:
                         cost -= diff
                         if cost <= instance.min_cost:
@@ -125,7 +135,7 @@ def explore(temp):
     return (best, opt)
 
 
-if __name__ == '__main__':
+def search_best_temps():
     temps = [
         # The best temperatures are:  [2, 1.5, 1, 0.5]
         [2, 1, .5],  # Entry:  0 , average:  11.5023886442
@@ -161,12 +171,12 @@ if __name__ == '__main__':
         drandge(.5, 3, .33)[::-1],  # Entry:  30 , average:  58.3274750471
         drandge(.5, 3, .4)[::-1],  # Entry:  31 , average:  52.3981850624
         drandge(.5, 3, .5)[::-1],  # Entry:  32 , average:  46.5125962734
-        #drandge(.5, 3.5, .1)[::-1],  # Entry:  33 , average:  195.822213292
-        #drandge(.5, 3.5, .2)[::-1],  # Entry:  34 , average:  99.3887918711
-        #drandge(.5, 3.5, .25)[::-1],  # Entry:  35 , average:  64.0317424059
-        #drandge(.5, 3.5, .33)[::-1],  # Entry:  36 , average:  69.1890354395
-        #drandge(.5, 3.5, .4)[::-1],  # Entry:  37 , average:  41.7157850981
-        #drandge(.5, 3.5, .5)[::-1],  # Entry:  38 , average:  40.6816365719
+        # drandge(.5, 3.5, .1)[::-1],  # Entry:  33 , average:  195.822213292
+        # drandge(.5, 3.5, .2)[::-1],  # Entry:  34 , average:  99.3887918711
+        # drandge(.5, 3.5, .25)[::-1],  # Entry:  35 , average:  64.0317424059
+        # drandge(.5, 3.5, .33)[::-1],  # Entry:  36 , average:  69.1890354395
+        # drandge(.5, 3.5, .4)[::-1],  # Entry:  37 , average:  41.7157850981
+        # drandge(.5, 3.5, .5)[::-1],  # Entry:  38 , average:  40.6816365719
     ]
     pool = Pool(processes=1)
     results = pool.map(explore, temps)
@@ -180,9 +190,9 @@ if __name__ == '__main__':
     print '-' * 40
     print 'The best temperatures are: ', temps[posi], ' with a time of: ', mini[0], ' and sweeps: ', mini[1]
 
-# To improve:
-# - To find diff: if sol[i] == sol[j] -> add J[i, j] else substract.
-# - Manually calculate the exp probs
-# - change so that diff = new - old
-# - Replace sum with for loop -> About the same, slightly slower
-# - Find best configurations and temperatures
+
+if __name__ == '__main__':
+    conf = [1, 1, 1, 1, 1, 1]
+    nocnof = [-1, -1, -1, -1, -1]
+    import pdb
+    pdb.set_trace()

@@ -22,6 +22,7 @@ from SimAnneal import StandardAnnealer, LinearAnnealer
 
 TOTAL_NB_QUBITS = 512
 INSTANCES_DIR = 'plantedInstances/'
+TABLE_INSTANCES_DIR = 'plantedInstances/'
 SOLUTIONS_DIR = 'solutionsForInstances/'
 VALUES_START = 4
 
@@ -152,7 +153,11 @@ class Instance(object):
 
 class LookupInstance(Instance):
 
-    """An instance, stored with a lookup table. Faster than the normal one."""
+    """
+        An instance, stored with a lookup table. Faster than the normal one.
+        The difference is that instead of using a numpy matrix, we store the neighbor's values of each qubits.
+        (Changed from matrix representation to linked-list representation.)
+    """
 
     def read_matrix(self, file):
         matrix = [[] for i in xrange(TOTAL_NB_QUBITS)]
@@ -178,6 +183,39 @@ class LookupInstance(Instance):
             add += value * sol[j]
             sub += value * prev_sol[j]
         return cost - (prev_sol[col] * sub) + (sol[col] * add)
+
+
+class TableInstance(object):
+
+    """
+        Here we have a lookup table that gives the energies for all
+        possible solutions of the problem.
+
+        The file we load does not define the problem, but instead only gives
+        us the energies for a given configuration. It only contains a list of
+        numbers.
+
+    """
+
+    def __init__(self, id=0, nb_sg=420, nb_qubits=504):
+        self.id = id
+        self.nb_sg = nb_sg
+        self.nb_qubits = nb_qubits
+        self.energies = self.load_energies()
+
+    def load_energies(self):
+        filename = 'plantedFrustLoops_Nq%s_Nsg%s_s%s.dat' % (
+            self.nb_qubits,
+            self.nb_sg,
+            self.id,
+        )
+        directory = os.path.dirname(os.path.abspath(__file__))
+        directory = os.path.join(directory, TABLE_INSTANCES_DIR)
+        file = open(directory + filename, 'r')
+        value = file.readlines()
+        file.close()
+        E = [int(v) for v in value]
+        return E
 
 
 if __name__ == '__main__':
