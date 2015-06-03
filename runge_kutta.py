@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import numpy as np
+
 
 def add_vector(A, B):
     return [a + b for a, b in zip(A, B)]
@@ -56,7 +58,7 @@ class RK(object):
         self.F = F
         self.dim = len(F(0))
 
-    def __call__(self, y=[], t=0, dt=0.1):
+    def __call__(self, y, t=0, dt=0.1):
         f = self.F(t)
         a_n = dot_mat_vec(f, y)
 
@@ -83,11 +85,45 @@ class RK(object):
         return add_vector(y, approx)
 
 
+class RK_np(RK):
+
+    """
+        Same as RK, but with a numpy implementation.
+    """
+
+    def __init__(self, F, y_dot=None):
+        self.F = F
+        self.dim = len(F(0))
+
+    def __call__(self, y, t=0, dt=0.1):
+        y = np.array(y)
+        f = self.F(t)
+        a_n = np.dot(f, y)
+
+        f = self.F(t + 0.5 * dt)
+        b_n = ((0.5 * dt) * a_n) + y
+        b_n = np.dot(f, b_n)
+
+        c_n = ((0.5 * dt) * b_n) + y
+        c_n = np.dot(f, c_n)
+
+        f = self.F(t + dt)
+        d_n = (dt * c_n) + y
+        d_n = np.dot(f, d_n)
+
+        return y + (dt / 6.0) * (a_n + 2 * b_n + 2 * c_n + d_n)
+
+
 if __name__ == '__main__':
 
     F_vec = lambda x: [[x ** 2, x ** 3],
                        [x, x ** .5]]
 
     y_dot = RK(F_vec)
-
     print y_dot([1, 2], t=0)
+
+    F_vec_np = lambda x: np.array([[x ** 2, x ** 3],
+                                   [x, x ** .5]])
+
+    y_dot_np = RK_np(F_vec_np)
+    print y_dot_np([1, 2], t=0)
