@@ -59,11 +59,21 @@ class RK(object):
     def __call__(self, y=[], t=0, dt=0.1):
         f = self.F(t)
         a_n = dot_mat_vec(f, y)
+
         f = self.F(t + 0.5 * dt)
-        b_n = dot_mat_vec(f, a_n)
-        c_n = dot_mat_vec(f, b_n)
+        b_n = dot_vec_float(a_n, 0.5 * dt)
+        b_n = add_vector(y, b_n)
+        b_n = dot_mat_vec(f, b_n)
+
+        c_n = dot_vec_float(b_n, 0.5 * dt)
+        c_n = add_vector(y, c_n)
+        c_n = dot_mat_vec(f, c_n)
+
         f = self.F(t + dt)
-        d_n = dot_mat_vec(f, c_n)
+        d_n = dot_vec_float(c_n, dt)
+        d_n = add_vector(y, d_n)
+        d_n = dot_mat_vec(f, d_n)
+
         b_n = dot_vec_float(b_n, 2)
         c_n = dot_vec_float(c_n, 2)
         approx = add_vector(a_n, b_n)
@@ -80,4 +90,4 @@ if __name__ == '__main__':
 
     y_dot = RK(F_vec)
 
-    print y_dot([1, 2], t=1)
+    print y_dot([1, 2], t=0)
