@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import time
-from math import pow
 from random import Random
 from math import (
     exp,
@@ -17,11 +16,10 @@ from performance import (
     Profiler,
 )
 
-TOTAL_NB_QUBITS = 512
 DIFF_RANGE = 65
 RND_SEED = 7186
 N_SWEEPS = 1000
-NB_EXECUTION_SOLVING = 3
+NB_EXECUTION_SOLVING = 100
 
 print 'Random Seed: ', RND_SEED
 
@@ -32,9 +30,6 @@ def int_from_qubits(qubits=[-1, 1, 1, -1]):
     return sol
 
 
-def load_instance(nqubits=504, nsg=420, id=1):
-    return [1, 2, 3, 4, 5]
-
 # @profile
 def run(problem_id, given_temps, given_sweeps):
     time_to_solution = time.time()
@@ -42,12 +37,14 @@ def run(problem_id, given_temps, given_sweeps):
     random = Random(RND_SEED).random
     randrange = Random(RND_SEED).randrange
     choice = Random(RND_SEED).choice
-    instance = TableInstance(id=problem_id, nb_sg=420)
+    #instance = TableInstance()
+    instance = TableInstance(nb_sg=14, id=23)
+    TOTAL_NB_QUBITS = instance.nb_qubits
     # instance = LookupInstance(id=0, nb_sg=420)
     n_sweeps = given_sweeps
     cost = None
     possible_values = (-1, 1)
-    energies = instance.eneriges
+    energies = instance.energies
     # generate_temperatures ******************
     # temperatures = [2, 1, .5]
     temperatures = given_temps
@@ -62,10 +59,9 @@ def run(problem_id, given_temps, given_sweeps):
     for i in xrange(NB_EXECUTION_SOLVING):
         #: Init variables for annealing
         solution = [choice(possible_values) for i in xrange(TOTAL_NB_QUBITS)]
-        cost = instance.get_cost
 
         #: Run the annealing process
-        cost = cost(solution)
+        cost = energies[int_from_qubits(solution)]
         for T_i, T in enumerate(temperatures):
             start = time.time()
             for sweep in xrange(n_sweeps):
@@ -79,7 +75,8 @@ def run(problem_id, given_temps, given_sweeps):
                     E_new = energies[int_from_qubits(solution)]
                     # ********************************************
                     diff = E_new - E_old
-                    if diff >= 0 or random() < accept_probs[T_i][diff]:
+                    if diff >= 0 or random() < exp(diff/T):
+                    #if diff >= 0 or random() < accept_probs[T_i][diff]:
                         cost -= diff
                         if cost <= instance.min_cost:
                             break
@@ -94,6 +91,7 @@ def run(problem_id, given_temps, given_sweeps):
         if cost == instance.min_cost:
             break
     end = time.time() - time_to_solution
+    end = float(end) / NB_EXECUTION_SOLVING
 
     print 'Time to solution: ', end
     return end
@@ -190,7 +188,4 @@ def search_best_temps():
 
 
 if __name__ == '__main__':
-    conf = [1, 1, 1, 1, 1, 1]
-    nocnof = [-1, -1, -1, -1, -1]
-    import pdb
-    pdb.set_trace()
+    run(0, [1.5, 1., 0.75, 0.5], 500)

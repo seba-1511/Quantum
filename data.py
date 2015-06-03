@@ -22,7 +22,7 @@ from SimAnneal import StandardAnnealer, LinearAnnealer
 
 TOTAL_NB_QUBITS = 512
 INSTANCES_DIR = 'plantedInstances/'
-TABLE_INSTANCES_DIR = 'plantedInstances/'
+TABLE_INSTANCES_DIR = 'LookupTable/'
 SOLUTIONS_DIR = 'solutionsForInstances/'
 VALUES_START = 4
 
@@ -197,15 +197,15 @@ class TableInstance(object):
 
     """
 
-    def __init__(self, id=0, nb_sg=420, nb_qubits=504):
+    def __init__(self, id=10, nb_sg=6, nb_qubits=6):
         self.id = id
         self.nb_sg = nb_sg
-        self.nb_qubits = nb_qubits
         self.energies = self.load_energies()
+        self.min_cost = min(self.energies)
+        self.nb_qubits = int(log(len(self.energies), 2))
 
     def load_energies(self):
-        filename = 'plantedFrustLoops_Nq%s_Nsg%s_s%s.dat' % (
-            self.nb_qubits,
+        filename = 'instFuzzy_n%s_p0.95_s%s.txt' % (
             self.nb_sg,
             self.id,
         )
@@ -214,7 +214,7 @@ class TableInstance(object):
         file = open(directory + filename, 'r')
         value = file.readlines()
         file.close()
-        E = [int(v) for v in value]
+        E = [float(v) for v in value]
         return E
 
 
