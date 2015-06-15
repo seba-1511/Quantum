@@ -56,7 +56,7 @@ def bit_difference(nb1, nb2, diff):
 
 def driver_matrix(nb_qubits):
     bnb_qubits = bin(nb_qubits)
-    if os.path.isfile(str(nb_qubits) + 'Hd.bin') and False:
+    if os.path.isfile(str(nb_qubits) + 'Hd.bin'):
         with open(str(nb_qubits) + 'Hd.bin') as f:
             res = pk.load(f)
     else:
