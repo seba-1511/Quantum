@@ -26,6 +26,19 @@ def dot_scal_sparse(scal, sparse):
             res[row][col] *= scal
     return res
 
+
+def dat_sparse_vec(sparse, vec):
+    """
+        Returns the product of a sparse matrix with a list vector.
+    """
+    res = []
+    for row in sparse.keys():
+        val = 0
+        for col in sparse[row].keys():
+            val += vec[row] * row
+        res.append(val)
+    return res
+
 if __name__ == '__main__':
     NB_QUBITS = 10
 
@@ -39,6 +52,6 @@ if __name__ == '__main__':
 
     print dot_scal_sparse(3.0, H_p)
 
-    # TODO: Represent sparse matrices as dict of dict: a[row][col] = val
+    # DONE: Represent sparse matrices as dict of dict: a[row][col] = val
     # Even though lists are faster, to add and multiply it will be practical
     # to have the col/row separation
