@@ -29,15 +29,13 @@ def dot_scal_sparse(scal, sparse):
     return res
 
 
-def dat_sparse_vec(sparse, vec):
+def dot_sparse_vec(sparse, vec):
     """
         Returns the product of a sparse matrix with a list vector.
     """
     res = []
     for row in sparse.keys():
-        val = 0
-        for col in sparse[row].keys():
-            val += vec[row] * row
+        val = sum([vec[col] * sparse[row][col] for col in sparse[row].keys()])
         res.append(val)
     return res
 

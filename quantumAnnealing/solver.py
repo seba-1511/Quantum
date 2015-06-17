@@ -3,6 +3,7 @@
 
 from runge_kutta import (
     RK,
+    SparseRK,
     dot_vec_vec,
 )
 from annealer import (
@@ -19,7 +20,7 @@ from data import (
 if __name__ == '__main__':
     NB_QUBITS = 5
     NB_ENTRIES = 2 ** 5
-    T = 20.0
+    T = 2.0
     A = lambda t: 1.0 - t / T
     B = lambda t: t / T
 
@@ -34,7 +35,7 @@ if __name__ == '__main__':
 
     y_dot = RK(F)
     init = [1] * NB_ENTRIES
-    dt = 0.01
+    dt = 0.5
     t = 0
 
     while t < T:
@@ -43,5 +44,6 @@ if __name__ == '__main__':
         init = val
 
     print 'Problem: ', [H_p[i][i] for i in xrange(NB_ENTRIES)]
+    import pdb; pdb.set_trace()
     print 'Probs: ', [abs(a) ** 2 for a in init]
 

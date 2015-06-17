@@ -167,31 +167,63 @@ class RK_np(RK):
 
 if __name__ == '__main__':
 
-    #F_vec = lambda x: [[complex(0, 1), complex(0, 1)],
-                       #[complex(0, 1), complex(0, -1)]]
+    if False:
+        F_vec = lambda x: [[complex(0, 1), complex(0, 1)],
+                           [complex(0, 1), complex(0, -1)]]
 
-    #y_dot = RK(F_vec)
-    #init = [1, 1]
-    #dt = 0.001
-    #print dot_mat_vec(F_vec(0), init)
-    #t = 0
-    #vals = [init, ]
-    #ts = [t, ]
-    #braket = [0, ]
-    #while t <= 20:
-        #val = y_dot(y=init, t=t, dt=dt)
-        ## print 'y=', init, ', t=', t, 'y_dot=', val
-        #vals.append(val)
-        #t += dt
-        #init = val
-        #ts.append(t)
-        #ket = dot_mat_vec(F_vec(0), init)
-        #ket = np.abs(dot_vec_vec(complex_conj_vec(init), ket))
-        #braket.append(ket)
-    ##: Plotting:
-    #vals = np.array(vals)
-    #y1_sq = np.abs(vals[:, 0]) ** 2
-    #y2_sq = np.abs(vals[:, 1]) ** 2
-    #y1_y2_sq_sum = y1_sq + y2_sq
-    #plotLines([[ts, y1_sq], [ts, y2_sq], [ts, y1_y2_sq_sum], [ts, braket]],
-              #title='Runge-Kutta', xlabel='Time', ylabel='')
+        y_dot = RK(F_vec)
+        init = [1, 1]
+        dt = 0.001
+        print dot_mat_vec(F_vec(0), init)
+        t = 0
+        vals = [init, ]
+        ts = [t, ]
+        braket = [0, ]
+        while t <= 20:
+            val = y_dot(y=init, t=t, dt=dt)
+            # print 'y=', init, ', t=', t, 'y_dot=', val
+            vals.append(val)
+            t += dt
+            init = val
+            ts.append(t)
+            ket = dot_mat_vec(F_vec(0), init)
+            ket = np.abs(dot_vec_vec(complex_conj_vec(init), ket))
+            braket.append(ket)
+        #: Plotting:
+        vals = np.array(vals)
+        y1_sq = np.abs(vals[:, 0]) ** 2
+        y2_sq = np.abs(vals[:, 1]) ** 2
+        y1_y2_sq_sum = y1_sq + y2_sq
+        plotLines([[ts, y1_sq], [ts, y2_sq], [ts, y1_y2_sq_sum], [ts, braket]],
+                  title='Runge-Kutta', xlabel='Time', ylabel='')
+
+    else:
+        F_vec = lambda t: {
+            0: {0: complex(0, 1), 1: complex(0, 1)},
+            1: {0: complex(0, 1), 1: complex(0, -1)},
+        }
+        y_dot = SparseRK(F_vec)
+        init = [1, 1]
+        dt = 0.001
+        print dot_sparse_vec(F_vec(0), init)
+        t = 0
+        vals = [init, ]
+        ts = [t, ]
+        braket = [0, ]
+        while t <= 20:
+            val = y_dot(y=init, t=t, dt=dt)
+            # print 'y=', init, ', t=', t, 'y_dot=', val
+            vals.append(val)
+            t += dt
+            init = val
+            ts.append(t)
+            ket = dot_sparse_vec(F_vec(0), init)
+            ket = np.abs(dot_vec_vec(complex_conj_vec(init), ket))
+            braket.append(ket)
+        #: Plotting:
+        vals = np.array(vals)
+        y1_sq = np.abs(vals[:, 0]) ** 2
+        y2_sq = np.abs(vals[:, 1]) ** 2
+        y1_y2_sq_sum = y1_sq + y2_sq
+        plotLines([[ts, y1_sq], [ts, y2_sq], [ts, y1_y2_sq_sum], [ts, braket]],
+                  title='Runge-Kutta', xlabel='Time', ylabel='')
