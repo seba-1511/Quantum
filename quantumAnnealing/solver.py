@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import numpy as np
 from runge_kutta import (
     RK,
     SparseRK,
@@ -20,7 +21,7 @@ from data import (
 if __name__ == '__main__':
     NB_QUBITS = 5
     NB_ENTRIES = 2 ** 5
-    T = 2.0
+    T = 20.0
     A = lambda t: 1.0 - t / T
     B = lambda t: t / T
 
@@ -33,9 +34,9 @@ if __name__ == '__main__':
     )
     F = lambda t: dot_scal_sparse(1j, H(t))
 
-    y_dot = RK(F)
+    y_dot = SparseRK(F)
     init = [1] * NB_ENTRIES
-    dt = 0.5
+    dt = 0.001
     t = 0
 
     while t < T:
@@ -43,7 +44,9 @@ if __name__ == '__main__':
         t += dt
         init = val
 
-    print 'Problem: ', [H_p[i][i] for i in xrange(NB_ENTRIES)]
-    import pdb; pdb.set_trace()
-    print 'Probs: ', [abs(a) ** 2 for a in init]
-
+    problem = [H_p[i][i] for i in xrange(NB_ENTRIES)]
+    probs = [abs(a) ** 2 for a in init]
+    print 'Problem: ', problem
+    print 'Probs: ', probs
+    print 'problem.argmin: ', np.argmin(problem)
+    print 'probs.argmax: ', np.argmax(probs)
