@@ -14,5 +14,6 @@ def generate_instance(size):
             x: randint(0, size)
         } for x in xrange(size)
     }
+    #res[size - 3] = {size-3: 0}
 
     return res

@@ -168,6 +168,7 @@ class RK_np(RK):
 if __name__ == '__main__':
 
     if False:
+        print 'NoSparse'
         F_vec = lambda x: [[complex(0, 1), complex(0, 1)],
                            [complex(0, 1), complex(0, -1)]]
 
@@ -198,6 +199,7 @@ if __name__ == '__main__':
                   title='Runge-Kutta', xlabel='Time', ylabel='')
 
     else:
+        print 'Sparse'
         F_vec = lambda t: {
             0: {0: complex(0, 1), 1: complex(0, 1)},
             1: {0: complex(0, 1), 1: complex(0, -1)},

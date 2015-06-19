@@ -52,9 +52,10 @@ def bit_difference(nb1, nb2, diff):
         return bit_difference(nb1[1:], nb2[1:], diff)
 
 
-def driver_matrix(nb_qubits):
+def driver_matrix(nb_qubits, load=False):
+    #: nb_qubits is actually 2 ** NB_QUBITS
     bnb_qubits = bin(nb_qubits)
-    if os.path.isfile(str(nb_qubits) + 'Hd.bin'):
+    if os.path.isfile(str(nb_qubits) + 'Hd.bin') and load:
         with open(str(nb_qubits) + 'Hd.bin') as f:
             res = pk.load(f)
     else:
@@ -70,7 +71,7 @@ def driver_matrix(nb_qubits):
                 diff = len(bnb_qubits) - len(brow)
                 brow = ('0' * diff) + brow
                 if bit_difference(brow, bcol, 1):
-                    res[row][col] = 1
+                    res[row][col] = -1
         with open(str(nb_qubits) + 'Hd.bin', 'wb') as f:
             pk.dump(res, f)
     return res
