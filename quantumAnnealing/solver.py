@@ -3,6 +3,7 @@
 
 import math
 import numpy as np
+from time import time
 from runge_kutta import (
     RK,
     SparseRK,
@@ -41,15 +42,18 @@ if __name__ == '__main__':
     dt = 0.01
     t = 0
 
+    start = time()
     while t < T:
         val = y_dot(y=init, t=t, dt=dt)
         t += dt
         init = val
         if t % 1.0 < epsilon:
+            print 'Checking at t=', t
             if abs(1.0 - sum([abs(i) ** 2 for i in init])) > epsilon:
                 print 'Restarted'
                 dt *= 10 ** -1
                 t = 0.0
+    print 'Total time: ', time() - start
 
     problem = [H_p[i][i] for i in xrange(NB_ENTRIES)]
     probs = [abs(i) ** 2 for i in init]
