@@ -3,14 +3,13 @@
 
 import os
 import cPickle as pk
-from copy import deepcopy
 
 
 def add_sparse(s1, s2):
     """
         Return the addition of two sparse matrices.
     """
-    res = deepcopy(s1)
+    res = {k: s1[k].copy() for k in s1.keys()}
     for row in s2.keys():
         for col in s2[row].keys():
             res[row][col] = s1[row][col] if row in s1 and col in s1[row] else 0
@@ -22,7 +21,7 @@ def dot_scal_sparse(scal, sparse):
     """
         Returns the product of a scalar with a sparse matrix.
     """
-    res = deepcopy(sparse)
+    res = {k: sparse[k].copy() for k in sparse.keys()}
     for row in res.keys():
         for col in res[row].keys():
             res[row][col] *= scal
