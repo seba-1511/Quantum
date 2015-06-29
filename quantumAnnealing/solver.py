@@ -19,19 +19,26 @@ from annealer import (
 from data import (
     load_instance,
     generate_instance,
+    inst_0,
+    inst_1,
 )
+
+
+def linear_schedule():
+    A = lambda t: 1.0 - t / T
+    B = lambda t: t / T
+    return (A, B)
 
 if __name__ == '__main__':
     # p = Profiler()
     # p.start()
-    NB_QUBITS = 6
+    NB_QUBITS = 5
     NB_ENTRIES = 2 ** NB_QUBITS
     epsilon = 10 ** -3
     T = 40.0
-    # A = lambda t: 1.0 - t / T
-    # B = lambda t: t / T
+    A, B = linear_schedule()
 
-    H_p = generate_instance(NB_ENTRIES)
+    H_p = inst_1() # generate_instance(NB_ENTRIES)
     H_d = driver_matrix(NB_ENTRIES, load=True)
 
     # H = lambda t: add_sparse(
@@ -40,10 +47,13 @@ if __name__ == '__main__':
     #)
     # F = lambda t: dot_scal_sparse(1j, H(t))
 
-    F = lambda t: dot_scal_sparse(1j, add_sparse(
-        dot_scal_sparse((1.0 - (t / T)), H_d),
-        dot_scal_sparse((t / T), H_p)
-    ))
+    H_p = dot_scal_sparse(1j, H_p)
+    H_d = dot_scal_sparse(1j, H_d)
+
+    F = lambda t: add_sparse(
+        dot_scal_sparse(A(t), H_d),
+        dot_scal_sparse(B(t), H_p)
+    )
 
     y_dot = SparseRK(F)
     init = [1 / math.sqrt(NB_ENTRIES)] * NB_ENTRIES
@@ -64,13 +74,13 @@ if __name__ == '__main__':
                 # start = 0.0
     print 'Total time: ', time() - start
     print 'dt=', dt
-    # p.stop()
 
     problem = [H_p[i][i] for i in xrange(NB_ENTRIES)]
     probs = [abs(i) ** 2 for i in init]
-    print 'Problem: ', problem
-    print 'Probs: ', probs
+    #print 'Problem: ', problem
+    #print 'Probs: ', probs
     print 'problem.argmin: ', np.argmin(problem)
     print 'probs.argmax: ', np.argmax(probs)
     print 'Sum: ', sum(probs)
+    # p.stop()
     # p.score()
