@@ -29,14 +29,19 @@ def linear_schedule():
     B = lambda t: t / T
     return (A, B)
 
+def new_schedule():
+    A = lambda t: 1.0 - t*2 / T
+    B = lambda t: t*2 / T
+    return (A, B)
+
 if __name__ == '__main__':
     # p = Profiler()
     # p.start()
     NB_QUBITS = 5
     NB_ENTRIES = 2 ** NB_QUBITS
     epsilon = 10 ** -3
-    T = 40.0
-    A, B = linear_schedule()
+    T = 2.1
+    A, B = new_schedule()
 
     H_p = inst_1() # generate_instance(NB_ENTRIES)
     H_d = driver_matrix(NB_ENTRIES, load=True)
