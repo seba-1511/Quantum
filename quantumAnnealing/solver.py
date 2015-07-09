@@ -29,21 +29,22 @@ def linear_schedule():
     B = lambda t: t / T
     return (A, B)
 
+
 def new_schedule():
-    A = lambda t: 1.0 - t*2 / T
-    B = lambda t: t*2 / T
+    A = lambda t: 1.0 - t * 2 / T
+    B = lambda t: t * 2 / T
     return (A, B)
 
 if __name__ == '__main__':
     # p = Profiler()
     # p.start()
-    NB_QUBITS = 5
+    NB_QUBITS = 8
     NB_ENTRIES = 2 ** NB_QUBITS
-    epsilon = 10 ** -3
-    T = 2.1
-    A, B = new_schedule()
+    epsilon = 1e-6
+    T = 40
+    A, B = linear_schedule()
 
-    H_p = inst_1() # generate_instance(NB_ENTRIES)
+    H_p = generate_instance(NB_ENTRIES)
     H_d = driver_matrix(NB_ENTRIES, load=True)
 
     # H = lambda t: add_sparse(
@@ -71,21 +72,24 @@ if __name__ == '__main__':
         t += dt
         init = val
         if t % 1.0 < epsilon:
-            # print 'Checking at t=', t
+            print 'Checking at t=', t, ' error: ', abs(1.0 - sum([abs(i) ** 2
+                                                                  for i in init]))
             if abs(1.0 - sum([abs(i) ** 2 for i in init])) > epsilon:
-                print 'Restarted'
+                print 'Restarted', t
                 dt *= 10 ** -1
                 t = 0.0
+                init = [1 / math.sqrt(NB_ENTRIES)] * NB_ENTRIES
                 # start = 0.0
     print 'Total time: ', time() - start
     print 'dt=', dt
+    print 'T: ', T
 
     problem = [H_p[i][i] for i in xrange(NB_ENTRIES)]
     probs = [abs(i) ** 2 for i in init]
-    #print 'Problem: ', problem
-    #print 'Probs: ', probs
-    print 'problem.argmin: ', np.argmin(problem)
-    print 'probs.argmax: ', np.argmax(probs)
+    # print 'Problem: ', problem
+    # print 'Probs: ', probs
+    print 'problem.min: ', np.min(problem)
+    print 'probs.found_min: ', problem[np.argmax(probs)]
     print 'Sum: ', sum(probs)
     # p.stop()
     # p.score()
