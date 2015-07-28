@@ -38,14 +38,15 @@ def new_schedule():
 if __name__ == '__main__':
     # p = Profiler()
     # p.start()
-    NB_QUBITS = 8
+    NB_QUBITS = 12
     NB_ENTRIES = 2 ** NB_QUBITS
     epsilon = 1e-6
-    T = 40
+    T = 0.00002
     A, B = linear_schedule()
 
     H_p = generate_instance(NB_ENTRIES)
     H_d = driver_matrix(NB_ENTRIES, load=True)
+    p = Profiler()
 
     # H = lambda t: add_sparse(
         # dot_scal_sparse(A(t), H_d),
@@ -63,9 +64,10 @@ if __name__ == '__main__':
 
     y_dot = SparseRK(F)
     init = [1 / math.sqrt(NB_ENTRIES)] * NB_ENTRIES
-    dt = 0.01
+    dt = 0.000001
     t = 0
 
+    p.start()
     start = time()
     while t < T:
         val = y_dot(y=init, t=t, dt=dt)
@@ -80,9 +82,12 @@ if __name__ == '__main__':
                 t = 0.0
                 init = [1 / math.sqrt(NB_ENTRIES)] * NB_ENTRIES
                 # start = 0.0
+        print 'timing: ', time() - start
     print 'Total time: ', time() - start
     print 'dt=', dt
     print 'T: ', T
+    p.stop()
+    p.score()
 
     problem = [H_p[i][i] for i in xrange(NB_ENTRIES)]
     probs = [abs(i) ** 2 for i in init]
