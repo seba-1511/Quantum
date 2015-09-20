@@ -41,7 +41,7 @@ if __name__ == '__main__':
     NB_QUBITS = 6
     NB_ENTRIES = 2 ** NB_QUBITS
     epsilon = 1e-6
-    T = 1.00002
+    T = 20.00002
     A, B = linear_schedule()
 
     H_p = generate_instance(NB_ENTRIES)
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     dt = 0.001
     t = 0
 
-    profile = 1
+    profile = 0
     if profile:
         p = Profiler()
         p.start()
@@ -97,6 +97,7 @@ if __name__ == '__main__':
 
     problem = [H_p[i][i] for i in xrange(NB_ENTRIES)]
     probs = [abs(i) ** 2 for i in init]
+    import pdb; pdb.set_trace()
     # print 'Problem: ', problem
     # print 'Probs: ', probs
     # print 'problem.min: ', np.min(problem)

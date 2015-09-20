@@ -6,7 +6,7 @@ import os
 import cPickle as pk
 import numpy as np
 from random import randint
-from scipy.sparse import *
+from scipy.sparse import dok_matrix
 from time import time
 from performance import Profiler
 from annealer import (
@@ -100,26 +100,24 @@ class SparseRK(object):
             y_dot: could be an array of the functions for y's (Not used yet)
         """
         self.F = F
-        self.dim = F(0).shape[0]
 
     def compute(self, y, t=0, dt=0.1):
         f = self.F(t)
-        keys = self.keys
-        a_n = dot_sparse_vec(f, y, keys)
+        a_n = dot_sparse_vec(f, y)
 
         f = self.F(t + 0.5 * dt)
         b_n = dot_vec_float(a_n, 0.5 * dt)
         b_n = add_vector(y, b_n)
-        b_n = dot_sparse_vec(f, b_n, keys)
+        b_n = dot_sparse_vec(f, b_n)
 
         c_n = dot_vec_float(b_n, 0.5 * dt)
         c_n = add_vector(y, c_n)
-        c_n = dot_sparse_vec(f, c_n, keys)
+        c_n = dot_sparse_vec(f, c_n)
 
         f = self.F(t + dt)
         d_n = dot_vec_float(c_n, dt)
         d_n = add_vector(y, d_n)
-        d_n = dot_sparse_vec(f, d_n, keys)
+        d_n = dot_sparse_vec(f, d_n)
 
         b_n = dot_vec_float(b_n, 2)
         c_n = dot_vec_float(c_n, 2)
@@ -143,10 +141,10 @@ def new_schedule():
 
 
 if __name__ == '__main__':
-    NB_QUBITS = 7
+    NB_QUBITS = 6
     NB_ENTRIES = 2 ** NB_QUBITS
     epsilon = 1e-6
-    T = 40.00002
+    T = 4.00002
     A, B = linear_schedule()
 
     H_p = generate_instance(NB_ENTRIES)
@@ -161,8 +159,8 @@ if __name__ == '__main__':
         dot_scal_sparse(B(t), H_p),
     )
 
-    # y_dot = SparseRK(F)
-    init = [1 / math.sqrt(NB_ENTRIES)] * NB_ENTRIES
+    y_dot = SparseRK(F)
+    init = [1 / math.sqrt(NB_ENTRIES) for _ in xrange(NB_ENTRIES)]
     init = np.array(init)
     dt = 0.001
     t = 0
@@ -172,37 +170,30 @@ if __name__ == '__main__':
         p = Profiler()
         p.start()
     start = time()
-    # compute = y_dot.compute
+    compute = y_dot.compute
     while t < T:
         # Replaces val = compute(init, t, dt) *********************************
-        # val = y_dot.compute(y=init, t=t, dt=dt)
-        f = F(t)
+        val = compute(y=init, t=t, dt=dt)
+        # f = F(t)
 
-        a_n = dot_sparse_vec(f, init)
+        # a_n = dot_sparse_vec(f, init)
+        # half_dt = 0.5 * dt
 
-        f = F(t + 0.5 * dt)
-        b_n = dot_vec_float(a_n, 0.5 * dt)
-        b_n = add_vector(init, b_n)
-        b_n = dot_sparse_vec(f, b_n)
+        # f = F(t + half_dt)
+        # b_n = f.dot(init + a_n * half_dt)
 
-        c_n = dot_vec_float(b_n, 0.5 * dt)
-        c_n = add_vector(init, c_n)
-        c_n = dot_sparse_vec(f, c_n)
+        # c_n = f.dot(init + b_n * half_dt)
 
-        f = F(t + dt)
-        d_n = dot_vec_float(c_n, dt)
-        d_n = add_vector(init, d_n)
-        d_n = dot_sparse_vec(f, d_n)
+        # f = F(t + dt)
+        # d_n = f.dot(init + c_n * dt)
 
-        b_n = dot_vec_float(b_n, 2)
-        c_n = dot_vec_float(c_n, 2)
-        approx = add_vector(a_n, b_n)
-        approx = add_vector(c_n, approx)
-        approx = add_vector(d_n, approx)
-        approx = dot_vec_float(approx, (dt / 6.0))
-        val = add_vector(approx, init)
+        # b_n *= 2
+        # c_n *= 2
+        # approx = (a_n + b_n + c_n + d_n) * dt / 6.0
+        # val = init + approx
         #**********************************************************************
         t += dt
+        init = val
         if t % 1.0 < epsilon:
             error = 0
             for i in init:
@@ -226,7 +217,7 @@ if __name__ == '__main__':
     problem = [H_p[i, i] for i in xrange(NB_ENTRIES)]
     probs = [abs(i) * abs(i) for i in init]
     # print 'Problem: ', problem
-    # print 'Probs: ', probs
+    print 'Probs: ', probs
     print 'problem.min: ', np.min(problem)
     print 'probs.found_min: ', problem[np.argmax(probs)]
     # print 'Sum: ', sum(probs)
@@ -235,6 +226,5 @@ if __name__ == '__main__':
 
 """
 TODO:
-    * Remove sum() implement as loops
     * Make everything global
 """

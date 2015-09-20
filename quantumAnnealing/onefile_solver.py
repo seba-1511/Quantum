@@ -32,11 +32,11 @@ def dot_scal_sparse(scal, sparse, sparse_keys):
     """
         Returns the product of a scalar with a sparse matrix.
     """
-    # res = {k: sparse[k].copy() for k in sparse.keys()}
+    res = {k: sparse[k].copy() for k in sparse_keys}
     for row in sparse_keys:
         for col in sparse[row].keys():
-            sparse[row][col] *= scal
-    return sparse
+            res[row][col] = sparse[row][col] * scal
+    return res
 
 
 def dot_sparse_vec(sparse, vec, keys):
@@ -55,9 +55,13 @@ def dot_sparse_vec(sparse, vec, keys):
 
 def add_vector(A, B):
     """ Must return unchanged A """
-    for i, a in enumerate(A):
-        B[i] += a
-    return B
+    res = []
+    for a, b in zip(A, B):
+        res.append(a+b)
+    return res
+    # for i, a in enumerate(A):
+        # B[i] += a
+    # return B
 
 
 def dot_vec_vec(vec, wec):
@@ -127,7 +131,7 @@ if __name__ == '__main__':
     NB_QUBITS = 7
     NB_ENTRIES = 2 ** NB_QUBITS
     epsilon = 1e-6
-    T = 40.00002
+    T = 4.00002
     A, B = linear_schedule()
 
     H_p = generate_instance(NB_ENTRIES)
@@ -192,6 +196,7 @@ if __name__ == '__main__':
         val = add_vector(approx, init)
         #**********************************************************************
         t += dt
+        init = val
         if t % 1.0 < epsilon:
             error = 0
             for i in init:
@@ -214,7 +219,7 @@ if __name__ == '__main__':
     problem = [H_p[i][i] for i in xrange(NB_ENTRIES)]
     probs = [abs(i) * abs(i) for i in init]
     # print 'Problem: ', problem
-    # print 'Probs: ', probs
+    print 'Probs: ', probs
     # print 'problem.min: ', np.min(problem)
     # print 'probs.found_min: ', problem[np.argmax(probs)]
     # print 'Sum: ', sum(probs)
