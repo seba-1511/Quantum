@@ -109,7 +109,7 @@ class SparseRK(object):
         self.F = F
         self.dim = len(F(0))
 
-    def __call__(self, y, t=0, dt=0.1):
+    def compute(self, y, t=0, dt=0.1):
         f = self.F(t)
         a_n = dot_sparse_vec(f, y)
 

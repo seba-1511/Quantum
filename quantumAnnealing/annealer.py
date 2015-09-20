@@ -34,7 +34,9 @@ def dot_sparse_vec(sparse, vec):
     """
     res = []
     for row in sparse.keys():
-        val = sum([vec[col] * sparse[row][col] for col in sparse[row].keys()])
+        val = 0
+        for col in sparse[row].keys():
+            val += vec[col] * sparse[row][col]
         res.append(val)
     return res
 
