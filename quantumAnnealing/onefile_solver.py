@@ -145,8 +145,18 @@ if __name__ == '__main__':
     #)
     # F = lambda t: dot_scal_sparse(1j, H(t))
 
-    H_p = dot_scal_sparse(1j, H_p, H_p_keys)
-    H_d = dot_scal_sparse(1j, H_d, H_d_keys)
+    # H_p = dot_scal_sparse(1j, H_p, H_p_keys)
+    res = {k: H_p[k].copy() for k in H_p_keys}
+    for row in H_p_keys:
+        for col in H_p[row].keys():
+            res[row][col] = H_p[row][col] * 1j
+    H_p = res
+    # H_d = dot_scal_sparse(1j, H_d, H_d_keys)
+    res = {k: H_d[k].copy() for k in H_d_keys}
+    for row in H_d_keys:
+        for col in H_d[row].keys():
+            res[row][col] = H_d[row][col] * 1j
+    H_d = res
 
     F = lambda t: add_sparse(
         dot_scal_sparse(A(t), H_d, H_d_keys),
@@ -168,8 +178,8 @@ if __name__ == '__main__':
     # compute = y_dot.compute
     while t < T:
         # Replaces val = compute(init, t, dt) *********************************
-        # val = y_dot.compute(y=init, t=t, dt=dt)
-        f = F(t)
+
+        # f = F(t)
 
         a_n = dot_sparse_vec(f, init, F_keys)
 
@@ -228,6 +238,5 @@ if __name__ == '__main__':
 
 """
 TODO:
-    * Remove sum() implement as loops
     * Make everything global
 """

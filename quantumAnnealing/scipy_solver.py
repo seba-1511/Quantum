@@ -27,7 +27,7 @@ def generate_instance(size):
     res = dok_matrix((size, size), dtype=DTYPE)
     for x in xrange(size):
         res[x, x] = randint(0, size)
-    res = res.tocsc()
+    res = res.tocsr()
     return res
 
 
@@ -49,95 +49,9 @@ def driver_matrix(nb_qubits, load=False):
                 brow = ('0' * diff) + brow
                 if bit_difference(brow, bcol, 1):
                     res[row, col] = -1
-        with open(str(nb_qubits) + 'Hd.bin_scipy', 'wb') as f:
+        with open(str(nb_qubits) + 'Hd_scipy.bin', 'wb') as f:
             pk.dump(res, f)
-    return res.tocsc()
-
-
-def add_sparse(s1, s2):
-    """
-        Return the addition of two sparse matrices.
-    """
-    return s1 + s2
-
-
-def dot_scal_sparse(scal, sparse):
-    """
-        Returns the product of a scalar with a sparse matrix.
-    """
-    return sparse.multiply(scal)
-
-
-def dot_sparse_vec(sparse, vec):
-    """
-        Returns the product of a sparse matrix with a list vector.
-    """
-    return sparse.dot(vec)
-
-
-def add_vector(A, B):
-    """ Must return unchanged A """
-    return A + B
-
-
-def dot_vec_vec(vec, wec):
-    return vec.dot(wec)
-
-
-def dot_vec_float(vec, fl):
-    return vec.dot(fl)
-
-
-class SparseRK(object):
-
-    """
-        RK for vector equations.
-    """
-
-    def __init__(self, F, y_dot=None):
-        """
-            F: the matrix of functions
-            y_dot: could be an array of the functions for y's (Not used yet)
-        """
-        self.F = F
-
-    def compute(self, y, t=0, dt=0.1):
-        f = self.F(t)
-        a_n = dot_sparse_vec(f, y)
-
-        f = self.F(t + 0.5 * dt)
-        b_n = dot_vec_float(a_n, 0.5 * dt)
-        b_n = add_vector(y, b_n)
-        b_n = dot_sparse_vec(f, b_n)
-
-        c_n = dot_vec_float(b_n, 0.5 * dt)
-        c_n = add_vector(y, c_n)
-        c_n = dot_sparse_vec(f, c_n)
-
-        f = self.F(t + dt)
-        d_n = dot_vec_float(c_n, dt)
-        d_n = add_vector(y, d_n)
-        d_n = dot_sparse_vec(f, d_n)
-
-        b_n = dot_vec_float(b_n, 2)
-        c_n = dot_vec_float(c_n, 2)
-        approx = add_vector(a_n, b_n)
-        approx = add_vector(approx, c_n)
-        approx = add_vector(approx, d_n)
-        approx = dot_vec_float(approx, (dt / 6.0))
-        return add_vector(y, approx)
-
-
-def linear_schedule():
-    A = lambda t: 1.0 - t / T
-    B = lambda t: t / T
-    return (A, B)
-
-
-def new_schedule():
-    A = lambda t: 1.0 - t * 2 / T
-    B = lambda t: t * 2 / T
-    return (A, B)
+    return res.tocsr()
 
 
 if __name__ == '__main__':
@@ -145,52 +59,43 @@ if __name__ == '__main__':
     NB_ENTRIES = 2 ** NB_QUBITS
     epsilon = 1e-6
     T = 4.00002
-    A, B = linear_schedule()
 
     H_p = generate_instance(NB_ENTRIES)
     H_d = driver_matrix(NB_ENTRIES, load=True)
 
 
-    H_p = dot_scal_sparse(1j, H_p)
-    H_d = dot_scal_sparse(1j, H_d)
+    H_p = H_p.dot(1j)
+    H_d = H_d.dot(1j)
 
-    F = lambda t: add_sparse(
-        dot_scal_sparse(A(t), H_d),
-        dot_scal_sparse(B(t), H_p),
-    )
-
-    y_dot = SparseRK(F)
     init = [1 / math.sqrt(NB_ENTRIES) for _ in xrange(NB_ENTRIES)]
     init = np.array(init)
     dt = 0.001
     t = 0
 
-    profile = 0
+    profile = 1
     if profile:
         p = Profiler()
         p.start()
     start = time()
-    compute = y_dot.compute
     while t < T:
         # Replaces val = compute(init, t, dt) *********************************
-        val = compute(y=init, t=t, dt=dt)
-        # f = F(t)
+        f = H_d.dot(1.0 - t/T) + H_p.dot(t / T)
 
-        # a_n = dot_sparse_vec(f, init)
-        # half_dt = 0.5 * dt
+        a_n = f.dot(init)
+        half_dt = 0.5 * dt
 
-        # f = F(t + half_dt)
-        # b_n = f.dot(init + a_n * half_dt)
+        f = H_d.dot(1.0 - (t + half_dt) / T) + H_p.dot((t + half_dt) / T)
+        b_n = f.dot(init + a_n * half_dt)
 
-        # c_n = f.dot(init + b_n * half_dt)
+        c_n = f.dot(init + b_n * half_dt)
 
-        # f = F(t + dt)
-        # d_n = f.dot(init + c_n * dt)
+        f = H_d.dot(1.0 - (t + dt) / T) + H_p.dot((t + dt) / T)
+        d_n = f.dot(init + c_n * dt)
 
-        # b_n *= 2
-        # c_n *= 2
-        # approx = (a_n + b_n + c_n + d_n) * dt / 6.0
-        # val = init + approx
+        b_n *= 2
+        c_n *= 2
+        approx = (a_n + b_n + c_n + d_n) * dt / 6.0
+        val = init + approx
         #**********************************************************************
         t += dt
         init = val
@@ -204,7 +109,7 @@ if __name__ == '__main__':
                 dt *= 0.1
                 t = 0.0
                 init = [1 / math.sqrt(NB_ENTRIES)] * NB_ENTRIES
-                # start = 0.0
+                start = 0.0
         # print 'timing: ', time() - start
     print 'Total time: ', time() - start
     # print 'dt=', dt
@@ -217,7 +122,7 @@ if __name__ == '__main__':
     problem = [H_p[i, i] for i in xrange(NB_ENTRIES)]
     probs = [abs(i) * abs(i) for i in init]
     # print 'Problem: ', problem
-    print 'Probs: ', probs
+    # print 'Probs: ', probs
     print 'problem.min: ', np.min(problem)
     print 'probs.found_min: ', problem[np.argmax(probs)]
     # print 'Sum: ', sum(probs)
@@ -226,5 +131,7 @@ if __name__ == '__main__':
 
 """
 TODO:
-    * Make everything global
+    * Make everything global:
+        * replace all lambdas
+        *
 """
