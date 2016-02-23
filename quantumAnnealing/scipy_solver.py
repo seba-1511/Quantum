@@ -55,7 +55,7 @@ def driver_matrix(nb_qubits, load=False):
 
 
 if __name__ == '__main__':
-    NB_QUBITS = 6
+    NB_QUBITS = 8
     NB_ENTRIES = 2 ** NB_QUBITS
     epsilon = 1e-6
     T = 4.00002
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     dt = 0.001
     t = 0
 
-    profile = 1
+    profile = 0
     if profile:
         p = Profiler()
         p.start()
